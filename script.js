@@ -1,14 +1,15 @@
 document.addEventListener("DOMContentLoaded", function () {
+
     const url_name = document.getElementById("url-name");
 
     function updateUrlDisplay() {
+
         chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
             const tab = tabs[0];
             if (tab) {
                 const url = tab.url; 
                 url_name.innerHTML = tab.url;
 
-                // Send the URL to the Flask server
                 fetch("http://localhost:5000/check_url", { 
                     method: "POST",
                     headers: {
@@ -19,10 +20,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 .then(response => response.json())
                 .then(data => {
                     if (data.result === 1) {
-                   
                         showPopup("HARMFUL");
-                    } else {
-                       
                     }
                 })
                 .catch(error => {
@@ -30,6 +28,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 });
             }
         });
+
     }
 
     function showPopup(message) {
@@ -46,7 +45,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
         document.body.appendChild(popup);
 
-        // Remove popup after a few seconds
         setTimeout(() => {
             document.body.removeChild(popup);
         }, 3000);
