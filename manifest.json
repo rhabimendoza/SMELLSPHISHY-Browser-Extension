@@ -1,0 +1,15 @@
+{
+    "manifest_version": 3,
+    "name": "SmellsPhishy",
+    "version": "1.0.0",
+    "description": "Adversarially trained phishing url browser extension.",
+    "author": "Thesis Group 4",
+    "action": {
+        "default_popup": "index.html",
+        "default_title": "SmellsPhishy"
+    },
+    "permissions": [
+        "tabs",
+        "scripting"
+    ]
+}
