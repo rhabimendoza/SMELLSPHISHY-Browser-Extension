@@ -1,36 +1,74 @@
 document.addEventListener("DOMContentLoaded", function () {
 
     const url_name = document.getElementById("url-name");
+    const toggleCheck = document.getElementById("toggle-check");
+    const textboxContainer = document.getElementById("textbox-container");
+    const manualUrlInput = document.getElementById("manual-url");
+    const checkUrlButton = document.getElementById("check-url-button");
 
-    function updateUrlDisplay() {
 
-        chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
-            const tab = tabs[0];
-            if (tab) {
-                const url = tab.url; 
-                url_name.innerHTML = tab.url;
+    let isOn = localStorage.getItem("isOn") === "false" ? false : true;
 
-                fetch("http://localhost:5000/check_url", { 
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify({ url: url }),
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.result === 1) {
-                        showPopup("HARMFUL");
-                    }
-                })
-                .catch(error => {
-                    console.error("Error:", error);
-                });
-            }
-        });
 
+    function updateUI() {
+        if (isOn) {
+            textboxContainer.style.display = "none";
+            updateUrlDisplay();  
+        } else {
+            textboxContainer.style.display = "block";
+            url_name.textContent = "";  
+        }
+        toggleCheck.checked = isOn;
     }
 
+    toggleCheck.addEventListener("change", function () {
+        isOn = toggleCheck.checked;
+        localStorage.setItem("isOn", isOn.toString());
+        updateUI();
+    });
+
+
+    function checkUrl(url) {
+        fetch("http://localhost:5000/check_url", { 
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ url: url }),
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.result === 1) {
+                showPopup("HARMFUL");
+            }
+        })
+        .catch(error => {
+            console.error("Error:", error);
+        });
+    }
+
+    function updateUrlDisplay() {
+        if (isOn) {
+            chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
+                const tab = tabs[0];
+                if (tab) {
+                    const url = tab.url; 
+                    url_name.innerHTML = url;
+                    checkUrl(url);
+                }
+            });
+        }
+    }
+
+
+    checkUrlButton.addEventListener("click", function () {
+        const manualUrl = manualUrlInput.value;
+        if (manualUrl) {
+            checkUrl(manualUrl);
+        }
+    });
+
+ 
     function showPopup(message) {
         const popup = document.createElement("div");
         popup.style.position = "fixed";
@@ -50,9 +88,13 @@ document.addEventListener("DOMContentLoaded", function () {
         }, 3000);
     }
 
+ 
     chrome.tabs.onActivated.addListener(function () {
-        updateUrlDisplay();
+        if (isOn) {
+            updateUrlDisplay();
+        }
     });
 
-    updateUrlDisplay();
+
+    updateUI();
 });

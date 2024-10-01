@@ -1,17 +1,28 @@
 <!DOCTYPE html>
-
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SmellsPhishy</title>
+    <style>
+        #textbox-container {
+            display: none;
+            margin-top: 10px;
+        }
+    </style>
 </head>
-
 <body>
+    <label>
+        <input type="checkbox" id="toggle-check" /> Auto URL Check
+    </label>
+    
+    <div id="textbox-container">
+        <input type="text" id="manual-url" placeholder="Enter URL manually">
+        <button id="check-url-button">Check URL</button>
+    </div>
+    
     <p id="url-name"></p>
+    
+    <script src="script.js"></script>
 </body>
-
-<script src="script.js"></script>
-
 </html>
