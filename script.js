@@ -1,75 +1,55 @@
-document.addEventListener("DOMContentLoaded", function () {
+document.addEventListener("DOMContentLoaded", function (){
 
-    const url_name = document.getElementById("url-name");
     const toggleCheck = document.getElementById("toggle-check");
     const textboxContainer = document.getElementById("textbox-container");
-    const manualUrlInput = document.getElementById("manual-url");
-    const checkUrlButton = document.getElementById("check-url-button");
+    const manualUrl = document.getElementById("manual-url");
+    const checkButton = document.getElementById("check-button");
 
-
-    let isOn = localStorage.getItem("isOn") === "false" ? false : true;
-
-
-    function updateUI() {
-        if (isOn) {
-            textboxContainer.style.display = "none";
-            updateUrlDisplay();  
-        } else {
-            textboxContainer.style.display = "block";
-            url_name.textContent = "";  
-        }
-        toggleCheck.checked = isOn;
-    }
-
-    toggleCheck.addEventListener("change", function () {
+    toggleCheck.addEventListener("change", function (){
         isOn = toggleCheck.checked;
         localStorage.setItem("isOn", isOn.toString());
         updateUI();
     });
 
+    let isOn = localStorage.getItem("isOn") === "false" ? false : true;
 
-    function checkUrl(url) {
-        fetch("http://localhost:5000/check_url", { 
+    function updateUI(){
+        if(isOn){
+            textboxContainer.style.display = "none"; 
+        } 
+        else{
+            textboxContainer.style.display = "block";
+        }
+        toggleCheck.checked = isOn;
+    }
+
+    checkButton.addEventListener("click", function (){
+        const url = manualUrl.value;
+        if(url){
+            checkUrl(url);
+        }
+    });
+
+    function checkUrl(url){
+        fetch("http://localhost:5000/check_url",{ 
             method: "POST",
-            headers: {
+            headers:{
                 "Content-Type": "application/json",
             },
             body: JSON.stringify({ url: url }),
         })
         .then(response => response.json())
-        .then(data => {
-            if (data.result === 1) {
+        .then(data =>{
+            if(data.result === 1){
                 showPopup("HARMFUL");
             }
+            else{
+                showPopup("SAFE");
+            }
         })
-        .catch(error => {
-            console.error("Error:", error);
-        });
     }
 
-    function updateUrlDisplay() {
-        if (isOn) {
-            chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
-                const tab = tabs[0];
-                if (tab) {
-                    const url = tab.url; 
-                    url_name.innerHTML = url;
-                    checkUrl(url);
-                }
-            });
-        }
-    }
-
-
-    checkUrlButton.addEventListener("click", function () {
-        const manualUrl = manualUrlInput.value;
-        if (manualUrl) {
-            checkUrl(manualUrl);
-        }
-    });
-
- 
-    function showPopup(message) {
+    function showPopup(message){
         const popup = document.createElement("div");
         popup.style.position = "fixed";
         popup.style.left = "50%";
@@ -83,18 +63,10 @@ document.addEventListener("DOMContentLoaded", function () {
 
         document.body.appendChild(popup);
 
-        setTimeout(() => {
+        setTimeout(() =>{
             document.body.removeChild(popup);
         }, 3000);
     }
-
- 
-    chrome.tabs.onActivated.addListener(function () {
-        if (isOn) {
-            updateUrlDisplay();
-        }
-    });
-
 
     updateUI();
 });

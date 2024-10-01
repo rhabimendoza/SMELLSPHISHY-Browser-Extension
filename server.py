@@ -6,6 +6,7 @@ CORS(app)
 
 @app.route('/check_url', methods=['POST'])
 def check_url():
+
     data = request.json
     url = data.get('url', '')
     
