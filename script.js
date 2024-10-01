@@ -4,6 +4,7 @@ document.addEventListener("DOMContentLoaded", function (){
     const textboxContainer = document.getElementById("textbox-container");
     const manualUrl = document.getElementById("manual-url");
     const checkButton = document.getElementById("check-button");
+    const resultText = document.createElement("p");
 
     toggleCheck.addEventListener("change", function (){
         isOn = toggleCheck.checked;
@@ -20,7 +21,10 @@ document.addEventListener("DOMContentLoaded", function (){
         else{
             textboxContainer.style.display = "block";
         }
+
         toggleCheck.checked = isOn;
+        resultText.textContent = "";
+        manualUrl.value = "";
     }
 
     checkButton.addEventListener("click", function (){
@@ -41,32 +45,15 @@ document.addEventListener("DOMContentLoaded", function (){
         .then(response => response.json())
         .then(data =>{
             if(data.result === 1){
-                showPopup("HARMFUL");
-            }
+                window.location.href = `phishing.html?url=${encodeURIComponent(url)}`;
+            } 
             else{
-                showPopup("SAFE");
+                resultText.textContent = "This URL is SAFE";
+                manualUrl.insertAdjacentElement("afterend", resultText);
             }
-        })
-    }
-
-    function showPopup(message){
-        const popup = document.createElement("div");
-        popup.style.position = "fixed";
-        popup.style.left = "50%";
-        popup.style.top = "50%";
-        popup.style.transform = "translate(-50%, -50%)";
-        popup.style.padding = "20px";
-        popup.style.backgroundColor = "red";
-        popup.style.color = "white";
-        popup.style.zIndex = "1000";
-        popup.textContent = message;
-
-        document.body.appendChild(popup);
-
-        setTimeout(() =>{
-            document.body.removeChild(popup);
-        }, 3000);
+        });
     }
 
     updateUI();
+    
 });
