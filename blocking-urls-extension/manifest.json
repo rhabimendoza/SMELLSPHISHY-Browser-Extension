@@ -1,0 +1,22 @@
+{
+    "manifest_version": 2,
+    "name": "URL Self-blocker",
+    "description": "Block all the pages you don't want to visit but you can't control yourself",
+    "version": "1.0",
+    "author": "Jon Besga",
+    "permissions": [
+        "storage",
+        "webRequest",
+        "webRequestBlocking",
+        "<all_urls>"
+    ],
+    "background": {
+        "scripts": [
+            "background.js"
+        ]
+    },
+    "browser_action": {
+        "default_popup": "popup.html"
+    },
+    "incognito": "split"
+}
