@@ -1,50 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Phishing Detected</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-        }
-        .container {
-            margin-top: 50px;
-            text-align: center;
-        }
-        .phishing-warning {
-            color: red;
-            font-size: 24px;
-            margin-bottom: 20px;
-        }
-        .url {
-            font-size: 18px;
-            margin-bottom: 20px;
-        }
-        .block-options {
-            margin-top: 20px;
-        }
-    </style>
-</head>
-<body>
-    <div class="container">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Phishing Detected</title>
+    </head>
+    <body>
         <div class="phishing-warning">Input URL is PHISHING</div>
         <p id="p1"></p>
-
-        <div class="block-options">
-            <p>Do you want to block the site?</p>
-            <form id="block-form">
-                <input type="radio" id="yes" name="block" value="yes">
-                <label for="yes">Yes</label><br>
-                <input type="radio" id="no" name="block" value="no">
-                <label for="no">No</label><br>
-                <button type="submit">Submit</button>
-            </form>
-        </div>
-    </div>
-
-    <script src="phishing.js">
-
-    </script>
-</body>
+        <input type="button" value="Block the URL">
+        <input type="button" value="Ignore">
+        <script src="phishing.js"></script>
+    </body>
 </html>
