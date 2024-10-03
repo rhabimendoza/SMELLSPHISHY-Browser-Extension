@@ -39,7 +39,7 @@ document.addEventListener("DOMContentLoaded", function (){
         .then(response => response.json())
         .then(data =>{
             if(data.result === 1){
-                window.location.href = `phishing.html?url=${encodeURIComponent(url)}`;
+                window.location.href = `manual_phishing_page.html?url=${encodeURIComponent(url)}`;
             } 
             else if(data.result === 2){
                 // incorrect url format
@@ -64,6 +64,7 @@ document.addEventListener("DOMContentLoaded", function (){
                 });
             });
         });
+        
         result_text.textContent = "Listed URLs unblocked.";
         manual_url.insertAdjacentElement("afterend", result_text);
     }
