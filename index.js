@@ -42,8 +42,8 @@ document.addEventListener("DOMContentLoaded", function (){
                 window.location.href = `manual_phishing_page.html?url=${encodeURIComponent(url)}`;
             } 
             else if(data.result === 2){
-                // incorrect url format
-                // manual_url.placeholder = "Url format is incorrect.";
+                manual_url.value = "";
+                manual_url.placeholder = "Invalid url.";
             }
             else{
                 result_text.textContent = "This URL is SAFE";
@@ -86,7 +86,7 @@ document.addEventListener("DOMContentLoaded", function (){
         }
         else{
             manual_url.value = "";
-            manual_url.placeholder = "Please input url.";
+            manual_url.placeholder = "Input url.";
         }
     });
 
@@ -102,4 +102,5 @@ document.addEventListener("DOMContentLoaded", function (){
 
     // Update ui
     updateUI();
+    
 });

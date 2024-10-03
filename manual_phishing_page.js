@@ -21,7 +21,7 @@ document.addEventListener("DOMContentLoaded", function (){
                 blockedUrls.push(url);
                 chrome.storage.local.set({ blockedUrls }, () =>{
                     chrome.runtime.sendMessage({ action: "applyBlockingRules" }, () =>{
-                        window.location.href = `url_blocked.html?url=${encodeURIComponent(url)}`;
+                        window.location.href = `url_blocked_page.html?url=${encodeURIComponent(url)}`;
                     });
                 });
             }
