@@ -10,7 +10,7 @@ def check_url():
     data = request.json
     url = data.get('url', '')
     
-    if "123" in url:
+    if ".com" in url:
         return jsonify({"result": 1})
     else:
         return jsonify({"result": 0})

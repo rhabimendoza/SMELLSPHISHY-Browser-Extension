@@ -5,6 +5,34 @@ document.addEventListener("DOMContentLoaded", function (){
     const manualUrl = document.getElementById("manual-url");
     const checkButton = document.getElementById("check-button");
     const resultText = document.createElement("p");
+    const unblockAllButton = document.getElementById("unblock-all-button");
+    const closeButton = document.getElementById("close-button"); // New close button reference
+
+    unblockAllButton.addEventListener("click", function () {
+        clearAllBlockedUrls();
+    });
+
+    // Close button event listener
+    closeButton.addEventListener("click", function () {
+        window.close(); // Close the current window or tab
+    });
+
+    function clearAllBlockedUrls() {
+        chrome.storage.local.remove("blockedUrls", () => {
+            alert("All blocked URLs have been unblocked.");
+            // Remove all blocking rules, not just based on `blockedUrls`
+            chrome.declarativeNetRequest.getDynamicRules((rules) => {
+                const ruleIds = rules.map(rule => rule.id);
+                chrome.declarativeNetRequest.updateDynamicRules({
+                    removeRuleIds: ruleIds,
+                    addRules: []
+                }, () => {
+                    console.log("All blocking rules removed.");
+                });
+            });
+        });
+    }
+    
 
     toggleCheck.addEventListener("change", function (){
         isOn = toggleCheck.checked;
@@ -55,5 +83,4 @@ document.addEventListener("DOMContentLoaded", function (){
     }
 
     updateUI();
-    
 });
