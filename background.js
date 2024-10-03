@@ -32,3 +32,10 @@ function applyUrlBlockingRules(){
         });
     });
 }
+
+// Add realtime url log
+chrome.webNavigation.onCompleted.addListener((details) => {
+    if (details.frameId === 0) { 
+        console.log('Navigated to:', details.url);
+    }
+});
