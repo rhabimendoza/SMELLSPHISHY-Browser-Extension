@@ -1,7 +1,7 @@
 import pickle
 import numpy as np
-from gensim.models import Word2Vec
 from urllib.parse import urlparse
+from gensim.models import Word2Vec
 
 # Load necessary models for feature extraction
 domain_model = Word2Vec.load('smellsphishy_domain.model')
@@ -78,3 +78,13 @@ def checkURLInput(url):
 
     # Return the result
     return final_predictions
+
+# Check if the url input structure is complete
+def checkURLFormat(url):
+
+    # Parse url
+    parsed_url = urlparse(url)
+    
+    # Check if the url scheme and netloc are not present
+    if not all([parsed_url.scheme, parsed_url.netloc]):
+        return 2

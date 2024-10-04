@@ -65,14 +65,14 @@ document.addEventListener("DOMContentLoaded", function (){
             .then(data => {
 
                 // Get result and use for classification
-                if(data.result === 1){
-                    window.location.href = `manual_phishing_page.html?url=${encodeURIComponent(url)}`;
-                } 
-                else if(data.result === 2){
+                if(data.result === 2){
                     manual_url.value = "";
                     manual_url.placeholder = "Invalid url.";
                 }
-                else {
+                else if(data.result === 1){
+                    window.location.href = `manual_phishing_page.html?url=${encodeURIComponent(url)}`;
+                } 
+                else if(data.result === 0){
                     result_text.textContent = "The URL is SAFE.";
                     document.body.insertAdjacentElement("afterbegin", result_text);
 

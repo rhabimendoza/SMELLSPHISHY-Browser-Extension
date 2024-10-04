@@ -19,6 +19,10 @@ def check_url():
     data = request.json
     url = data.get('url', '')
 
+    # Check url format
+    if(checkURLFormat(url) == 2):
+        return jsonify({"result": 2})
+
     # Send the url to function for checking
     result = checkURLInput(url)
     classification = result[0]
