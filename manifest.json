@@ -1,20 +1,20 @@
 {
     "manifest_version": 3,
-    "name": "SmellsPhishy",
     "version": "1.0.0",
-    "description": "Adversarially trained phishing URL browser extension.",
+    "name": "SmellsPhishy",
     "author": "Thesis Group 4",
+    "description": "Adversarially trained phishing URL browser extension.",
     "action": {
         "default_popup": "index.html",
         "default_title": "SmellsPhishy"
     },
-    "permissions": [
-        "declarativeNetRequest", 
-        "declarativeNetRequestWithHostAccess",
-        "storage", 
+    "permissions": [ 
         "tabs",
+        "storage", 
         "scripting",
-        "webNavigation"
+        "webNavigation",
+        "declarativeNetRequest", 
+        "declarativeNetRequestWithHostAccess"
     ],
     "host_permissions": [
         "<all_urls>" 

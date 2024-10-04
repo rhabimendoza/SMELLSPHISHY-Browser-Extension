@@ -1,4 +1,4 @@
-document.addEventListener("DOMContentLoaded", function () {
+document.addEventListener("DOMContentLoaded", function (){
 
     // Get all components in html
     const toggle_check = document.getElementById("toggle-check");
@@ -9,120 +9,139 @@ document.addEventListener("DOMContentLoaded", function () {
     const delete_button = document.getElementById("delete-button");
     const close_button = document.getElementById("close-button");
 
-   
-
     // Create component for displaying output of process
     const result_text = document.createElement("p");
 
     // Initialize checkbox state
-    if (localStorage.getItem("isOn") === null) {
-        localStorage.setItem("isOn", "false"); // Set default to unchecked (false)
+    if(localStorage.getItem("isOn") === null){
+        localStorage.setItem("isOn", "false");
     }
 
-    // Update the UI based on the stored state
+    // Update the ui based on the stored state
     updateUI();
 
     // Show or hide container depending on checkbox
-    function updateUI() {
+    function updateUI(){
+
+        // Get state of checkbox
         var isOn = localStorage.getItem("isOn") === "false" ? false : true;
 
-        if (isOn) {
+        // Hide components for manual checking if checked
+        if(isOn){
             manual_container.style.display = "none"; 
         } 
-        else {
+        else{
             manual_container.style.display = "block";
         }
 
+        // Store state and clear changes in display
         toggle_check.checked = isOn;
         manual_url.value = "";
         result_text.textContent = "";
     }
 
-    // TODO: Add the model and result
-    function checkURL(url) {
-        fetch("http://localhost:5000/check_url", { 
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ url: url }),
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.result === 1) {
-                window.location.href = `manual_phishing_page.html?url=${encodeURIComponent(url)}`;
-            } 
-            else if (data.result === 2) {
-                manual_url.value = "";
-                manual_url.placeholder = "Invalid url.";
-            }
-            else {
-                result_text.textContent = "This URL is SAFE";
-                manual_url.insertAdjacentElement("afterend", result_text);
-            }
-        });
+    // Check validity and classification of url
+    function checkURL(){
+
+        // Get url and trim it
+        var url = manual_url.value;
+        url = url.trim();
+
+        if(!url){
+            manual_url.value = "";
+            manual_url.placeholder = "Input a url.";
+        }
+        else{
+
+            // Send url to python
+            fetch("http://localhost:5000/check_url", { 
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({url: url}),
+            })
+            .then(response => response.json())
+            .then(data => {
+
+                // Get result and use for classification
+                if(data.result === 1){
+                    window.location.href = `manual_phishing_page.html?url=${encodeURIComponent(url)}`;
+                } 
+                else if(data.result === 2){
+                    manual_url.value = "";
+                    manual_url.placeholder = "Invalid url.";
+                }
+                else {
+                    result_text.textContent = "The URL is SAFE.";
+                    document.body.insertAdjacentElement("afterbegin", result_text);
+
+                }
+            });
+
+        }
+
     }
 
-    function unblockURL() {
-        chrome.storage.local.set({ blockedUrls: [] }, () => {
-            result_text.textContent = "Listed URLs unblocked.";
-            manual_url.insertAdjacentElement("afterend", result_text);
+    // Unblock listed urls
+    function unblockURL(){
+
+        // Get all urls and unblock
+        chrome.storage.local.remove("blockedUrls", () => {
+            chrome.declarativeNetRequest.getDynamicRules((rules) => {
+                const ruleIds = rules.map(rule => rule.id);
+                chrome.declarativeNetRequest.updateDynamicRules({
+                    removeRuleIds: ruleIds,
+                    addRules: []
+                },() =>{
+                });
+            });
         });
+        
+        result_text.textContent = "Listed URLs unblocked.";
+        document.body.insertAdjacentElement("afterbegin", result_text);
     }
 
-    // Function to delete all allowedUrls from storage
-    function deleteURL() {
-        chrome.storage.local.set({ allowedUrls: [] }, () => {
-            result_text.textContent = "Listed allowed URLs deleted.";
-            manual_url.insertAdjacentElement("afterend", result_text);
-        });
-    }
+    // Delete list of allowed urls
+    function deleteURL(){
 
-    // Get the state of checkbox and update UI of HTML
-    toggle_check.addEventListener("change", function () {
+        // Empty list of allowed urls
+        chrome.storage.local.set({ allowedUrls: [] }, () => {});
+
+        // Display success
+        result_text.textContent = "Listed allowed URLs deleted.";
+        document.body.insertAdjacentElement("afterbegin", result_text);
+    }
+    
+    // Get the state of checkbox and update ui
+    toggle_check.addEventListener("change", function (){
         var isOn = toggle_check.checked;
         localStorage.setItem("isOn", isOn.toString());
-        chrome.storage.local.set({ isOn: isOn });
+        chrome.storage.local.set({isOn: isOn});
         updateUI();
-
-        // Log the state of the checkbox
-        console.log(isOn ? "Checked" : "Unchecked");
     });
 
     // Check the input url 
-    check_button.addEventListener("click", function () {
-        var url = manual_url.value;
-        url = url.trim();
-        
-        if (url) {
-            checkURL(url);
-        }
-        else {
-            manual_url.value = "";
-            manual_url.placeholder = "Input url.";
-        }
+    check_button.addEventListener("click", function (){
+        checkURL();
     });
 
     // Unblock all listed URL
-    unblock_button.addEventListener("click", function () {
+    unblock_button.addEventListener("click", function (){
         unblockURL();
     });
 
     // Delete allowed URLs
-    delete_button.addEventListener("click", function () {
+    delete_button.addEventListener("click", function (){
         deleteURL();
     });
 
     // Close the HTML page
-    close_button.addEventListener("click", function () {
+    close_button.addEventListener("click", function (){
         window.close(); 
     });
 
-    // Initialize the checkbox state if not set
-    if (localStorage.getItem("isOn") === null) {
-        localStorage.setItem("isOn", "true"); // Set default to checked (true)
-    }
-
-    // Update UI
+    // Update ui
     updateUI();
+
 });
