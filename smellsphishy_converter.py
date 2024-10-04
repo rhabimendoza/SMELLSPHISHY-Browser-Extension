@@ -7,15 +7,7 @@ from urllib.parse import urlparse
 domain_model = Word2Vec.load('smellsphishy_domain.model')
 path_model = Word2Vec.load('smellsphishy_path.model')
 
-# Parse url
-def parse_url(url):
-    parsed_url = urlparse(url)
-    domain = parsed_url.netloc
-    path = parsed_url.path.strip('/').split('/') if parsed_url.path else []
-    query = parsed_url.query
-    return domain, path, query
-
-# Embedding generation using pre-trained models
+# Embedding generation using pretrained models
 def generate_embeddings(tokens, model):
     embeddings = [model.wv[token] for token in tokens if token in model.wv]
     if embeddings:
@@ -36,7 +28,6 @@ def extract_features(url):
     domain_tokens = len(domain.split('.'))
     path_length = len('/'.join(path)) if path else 0
     query_length = len(query)
-
     num_dots = domain.count('.')
     num_hyphens = domain.count('-')
     num_special_chars = sum([c in '@!#$%^&*()' for c in domain + '/'.join(path)])
@@ -66,12 +57,11 @@ def extract_features(url):
     # Concatenate all features
     combined_features = np.concatenate([feature_vector, domain_embedding, path_embedding])
 
+    # Return features
     return combined_features
 
 # Check and classify the url
-def check(url):
-
-    print(url)
+def checkURLInput(url):
 
     # Load the trained model
     with open('smellsphishy_main_model.pkl', 'rb') as f:

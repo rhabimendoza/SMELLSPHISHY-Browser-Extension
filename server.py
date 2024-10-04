@@ -1,5 +1,6 @@
 from flask import Flask, request, jsonify, render_template
 from flask_cors import CORS
+from smellsphishy_converter import *
 
 # Create flask app
 app = Flask(__name__)
@@ -18,8 +19,12 @@ def check_url():
     data = request.json
     url = data.get('url', '')
 
-    # Change checking
-    if "com" in url:
+    # Send the url to function for checking
+    result = checkURLInput(url)
+    classification = result[0]
+
+    # Return classification
+    if classification == 1:
         return jsonify({"result": 1})
     else:
         return jsonify({"result": 0})
