@@ -9,10 +9,10 @@ document.addEventListener("DOMContentLoaded", function (){
     const url = params.get("url");
     
     // Display the blocked url
-    blocked_url.innerHTML = `Blocked URL: ${url}`;
+    blocked_url.innerHTML = url;
 
     // Close the html page
-    close_button.addEventListener("click", function () {
+    close_button.addEventListener("click", function (){
         window.close();
     });
     
