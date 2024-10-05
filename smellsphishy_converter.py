@@ -1,3 +1,4 @@
+import re
 import pickle
 import numpy as np
 from urllib.parse import urlparse
@@ -88,3 +89,39 @@ def checkURLFormat(url):
     # Check if the url scheme and netloc are not present
     if not all([parsed_url.scheme, parsed_url.netloc]):
         return 2
+
+# Check internal url
+def is_browser_internal_url(url):
+
+    # List of internal browser url
+    internal_url_patterns = [
+        r'^chrome://',                   
+        r'^chrome-extension://',          
+        r'^chrome-error://',               
+        r'^chrome-untrusted://',           
+        r'^about:',                        
+        r'^moz-extension://',              
+        r'^resource://',                   
+        r'^edge://',                      
+        r'^ms-browser-extension://',      
+        r'^edge-error://',                 
+        r'^safari://',                     
+        r'^safari-extension://',           
+        r'^opera://',                      
+        r'^opera-untrusted://',           
+        r'^vivaldi://',                   
+        r'^brave://',                 
+        r'^about:blank',                  
+        r'^about:srcdoc',         
+        r'^blob:',                       
+        r'^data:',                 
+        r'^filesystem:',                   
+        r'^devtools://',                  
+        r'^view-source:',             
+        r'^webview://',              
+    ]
+
+    # Check if url matches any of the internal patterns
+    for pattern in internal_url_patterns:
+        if re.match(pattern, url):
+            return 0

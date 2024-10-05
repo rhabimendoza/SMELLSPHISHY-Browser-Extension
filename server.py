@@ -1,6 +1,6 @@
-from flask import Flask, request, jsonify, render_template
 from flask_cors import CORS
 from smellsphishy_converter import *
+from flask import Flask, request, jsonify, render_template
 
 # Create flask app
 app = Flask(__name__)
@@ -18,6 +18,10 @@ def check_url():
     # Get the url
     data = request.json
     url = data.get('url', '')
+
+    # Add condition for internal url
+    if(is_browser_internal_url(url) == 0):
+        return jsonify({"result": 0})
 
     # Check url format
     if(checkURLFormat(url) == 2):
