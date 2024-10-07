@@ -107,4 +107,4 @@ chrome.webNavigation.onBeforeNavigate.addListener((details) => {
         const url = details.url;
         checkURL(url, details.tabId);
     }
-}, { url: [{urlMatches: '.*'}]});
+}, { url: [{ schemes: ['http', 'https'] }]});

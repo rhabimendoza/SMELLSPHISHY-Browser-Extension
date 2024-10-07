@@ -1,3 +1,4 @@
+import re
 import pickle
 import numpy as np
 from urllib.parse import urlparse
@@ -80,3 +81,13 @@ def checkURLInput(url):
 
     # Return the result
     return final_predictions
+
+# Check if valid url
+def validURL(url):
+
+    # Define a regex pattern for validating url
+    pattern = re.compile(r'^(http|https)://[a-zA-Z0-9-._~:/?#@!$&\'()*+,;=%]+$')
+    
+    # Match the input url against the pattern
+    if not re.match(pattern, url):
+        return 2
