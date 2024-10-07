@@ -28,7 +28,7 @@ document.addEventListener("DOMContentLoaded", function (){
 
         // Hide components for manual checking if checked
         if(isOn){
-            manual_container.innerHTML = "Automatic Detection is Enabled"; 
+            manual_container.style.display = "none"; 
         } 
         else{
             manual_container.style.display = "block";
