@@ -1,12 +1,7 @@
-import re
 import pickle
 import numpy as np
 from urllib.parse import urlparse
 from gensim.models import Word2Vec
-
-# Load necessary models for feature extraction
-domain_model = Word2Vec.load('smellsphishy_domain.model')
-path_model = Word2Vec.load('smellsphishy_path.model')
 
 # Embedding generation using pretrained models
 def generate_embeddings(tokens, model):
@@ -18,6 +13,12 @@ def generate_embeddings(tokens, model):
 
 # Extract features from url
 def extract_features(url):
+    
+    # Load necessary models for feature extraction
+    domain_model = Word2Vec.load('smellsphishy_domain.model')
+    path_model = Word2Vec.load('smellsphishy_path.model')
+
+    # Parse url
     parsed_url = urlparse(url)
     domain = parsed_url.netloc
     path = parsed_url.path.strip('/').split('/') if parsed_url.path else []
@@ -50,9 +51,9 @@ def extract_features(url):
 
     # Combine basic features and embeddings
     feature_vector = np.array([
-    url_length, domain_length, domain_tokens, path_length, num_dots, num_hyphens,
-    num_special_chars, num_digits, num_subdirectories, query_length,
-    num_query_params, has_suspicious_keywords
+        url_length, domain_length, domain_tokens, path_length, num_dots, num_hyphens,
+        num_special_chars, num_digits, num_subdirectories, query_length,
+        num_query_params, has_suspicious_keywords
     ])
 
     # Concatenate all features
@@ -79,49 +80,3 @@ def checkURLInput(url):
 
     # Return the result
     return final_predictions
-
-# Check if the url input structure is complete
-def checkURLFormat(url):
-
-    # Parse url
-    parsed_url = urlparse(url)
-    
-    # Check if the url scheme and netloc are not present
-    if not all([parsed_url.scheme, parsed_url.netloc]):
-        return 2
-
-# Check internal url
-def is_browser_internal_url(url):
-
-    # List of internal browser url
-    internal_url_patterns = [
-        r'^chrome://',                   
-        r'^chrome-extension://',          
-        r'^chrome-error://',               
-        r'^chrome-untrusted://',           
-        r'^about:',                        
-        r'^moz-extension://',              
-        r'^resource://',                   
-        r'^edge://',                      
-        r'^ms-browser-extension://',      
-        r'^edge-error://',                 
-        r'^safari://',                     
-        r'^safari-extension://',           
-        r'^opera://',                      
-        r'^opera-untrusted://',           
-        r'^vivaldi://',                   
-        r'^brave://',                 
-        r'^about:blank',                  
-        r'^about:srcdoc',         
-        r'^blob:',                       
-        r'^data:',                 
-        r'^filesystem:',                   
-        r'^devtools://',                  
-        r'^view-source:',             
-        r'^webview://',              
-    ]
-
-    # Check if url matches any of the internal patterns
-    for pattern in internal_url_patterns:
-        if re.match(pattern, url):
-            return 0

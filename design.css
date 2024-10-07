@@ -1,0 +1,129 @@
+body {
+    background-color: #F2F2F2;
+    width: 100%;
+}
+
+/*************index.html**************/
+
+.extension-header {
+    background-color: #DA0037;
+    height: 70px;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    padding: 0 20px 0 20px;
+}
+
+.extension-body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.form-check {
+    display: flex;
+    align-items: center;
+}
+
+#manual-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 10px;
+}
+
+#check-button {
+    background-color: #DA0037;
+    color: #ffffff;
+}
+
+.others-container {
+    border: solid 1.5px #868686;
+    padding: 8px 8px 15px 8px;
+    margin: 10px;
+    border-radius: 10px;
+    width: 300px;
+}
+
+.other-title {
+    color: #868686;
+    margin-bottom: 8px;
+}
+
+.others-contents {
+    font-size: 14px;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+
+.others-contents input{
+    margin: 0 5px 0 5px;
+}
+
+.close-btn {
+    margin: 0 0 10px 0;
+}
+
+/*************manual-phishing**************/
+
+.warning-header {
+    background-color: #DA0037;
+    height: 70px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    padding: 0 20px 0 20px;
+}
+
+.warning-img img {
+    width: 40px;
+    margin-right: 10px;
+    height: 100%;
+}
+
+.warning-text {
+    height: 100%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.phishing-text {
+    margin: 10px;
+    text-align: center;
+}
+
+.warning-btn input{
+    margin: 0 5px 10px 0;
+}
+
+/*************auto-phishing**************/
+
+.auto-phishing{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+}
+
+.allowed-btn {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-items: center;
+}
+
+.allowed-btn input {
+    background-color: #F2F2F2;
+    border: #F2F2F2;
+    font-weight: bold;
+    text-decoration-line: underline;
+}
+
+/*************auto-blocked**************/
+
+.blocked-msg {
+    margin: 10px 10px 0 10px;
+}
