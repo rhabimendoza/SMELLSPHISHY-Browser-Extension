@@ -74,7 +74,7 @@ function checkURL(url, tabId){
                         
                         // If detected as phishing, go to phishing page
                         if(data.result === 1){
-                            chrome.tabs.update(tabId, { url: `auto_phishing_page.html?url=${encodeURIComponent(url)}`});
+                            chrome.tabs.update(tabId, { url: `page_phishing.html?url=${encodeURIComponent(url)}`});
                         }
 
                     });

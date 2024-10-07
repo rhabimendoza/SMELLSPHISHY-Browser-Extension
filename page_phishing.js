@@ -3,7 +3,7 @@ document.addEventListener("DOMContentLoaded", function (){
     // Get components in html
     const received_url = document.getElementById("received-url");
     const block_button = document.getElementById("block-button");
-    const allowed_button = document.getElementById("allowed-button");
+    const allow_button = document.getElementById("allow-button");
     const ignore_button = document.getElementById("ignore-button");
 
     // Get the url sent
@@ -25,7 +25,7 @@ document.addEventListener("DOMContentLoaded", function (){
                 blockedUrls.push(url);
                 chrome.storage.local.set({ blockedUrls }, () => {
                     chrome.runtime.sendMessage({ action: "applyBlockingRules" }, () => {
-                        window.location.href = `auto_blocked_page.html?url=${encodeURIComponent(url)}`;
+                        window.location.href = `page_blocked.html?url=${encodeURIComponent(url)}`;
                     });
                 });
             }
@@ -45,7 +45,7 @@ document.addEventListener("DOMContentLoaded", function (){
             if (!allowedUrls.includes(url)) {
                 allowedUrls.push(url);
                 chrome.storage.local.set({ allowedUrls }, () => {
-                    window.location.href = url; 
+                    window.location.href = `page_allowed.html?url=${encodeURIComponent(url)}`;
                 });
             }
 
@@ -59,7 +59,7 @@ document.addEventListener("DOMContentLoaded", function (){
     });
 
     // List the url in allowed
-    allowed_button.addEventListener("click", function (){
+    allow_button.addEventListener("click", function (){
         allowURL();
     });
 

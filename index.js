@@ -26,7 +26,7 @@ document.addEventListener("DOMContentLoaded", function (){
         // Get state of checkbox
         var isOn = localStorage.getItem("isOn") === "false" ? false : true;
 
-        // Hide components for manual checking if checked
+        // Hide components of manual checking if checked
         if(isOn){
             manual_container.style.display = "none"; 
         } 
@@ -70,7 +70,7 @@ document.addEventListener("DOMContentLoaded", function (){
                     manual_url.placeholder = "Invalid url.";
                 }
                 else if(data.result === 1){
-                    window.location.href = `manual_phishing_page.html?url=${encodeURIComponent(url)}`;
+                    window.location.href = `page_phishing.html?url=${encodeURIComponent(url)}`;
                 } 
                 else if(data.result === 0){
                     result_text.textContent = "The URL is SAFE.";
