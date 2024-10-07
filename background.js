@@ -32,16 +32,6 @@ function checkURL(url, tabId){
     // Trim whitespace from the URL
     url = url.trim();
 
-    // List schemes
-    const ignoredSchemes = ['chrome://', 'chrome-extension://', 'chrome-untrusted://', 'devtools://',
-        'edge://', 'edge-extension://', 'edge-untrusted://', 'about:', 'file://',
-        'view-source:', 'data:', 'blob:', 'filesystem:'];
-
-    // Do not check url if it is in schemes
-    if(ignoredSchemes.some(scheme => url.startsWith(scheme))){
-        return;
-    }
-
     // Get the value of the checkbox to determine whether to execute url check automatically
     chrome.storage.local.get("isOn", (result) => {
         const isOn = result.isOn;
