@@ -20,18 +20,19 @@ def check_url():
     url = data.get('url', '')
     
     # Check if url input is valid
-    if validURL(url) == 2:
-        return jsonify({"result": 2})
+    if validURL(url) == 3:
+        return jsonify({"result": 3, "probability": 0})
 
     # Send the url to function for checking
-    result = checkURLInput(url)
-    classification = result[0]
+    result, probability = checkURLInput(url)
 
     # Return classification
-    if classification == 1:
-        return jsonify({"result": 1})
+    if result == 1:
+        return jsonify({"result": 1, "probability": probability})
+    elif result == 2:
+        return jsonify({"result": 2, "probability": probability})
     else:
-        return jsonify({"result": 0})
+        return jsonify({"result": 0, "probability": 0}) 
 
 # Run app
 if __name__ == '__main__':

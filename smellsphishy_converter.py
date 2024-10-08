@@ -77,10 +77,18 @@ def checkURLInput(url):
     features = features.reshape(1, -1)
 
     # Predict using the Random Forest model
-    tree_predictions, final_predictions = rf_model.predict(features)
+    probabilities = rf_model.predict_proba(features)
 
-    # Return the result
-    return final_predictions
+    # Get the probability
+    prob1 = probabilities[0][1]
+
+    # Classify if warning only or phishing
+    if 0.71 <= prob1 <= 1.00:
+        return 1, prob1
+    elif 0.51 <= prob1 <= 0.70:
+        return 2, prob1
+    else:
+        return 0, prob1
 
 # Check if valid url
 def validURL(url):
@@ -90,4 +98,4 @@ def validURL(url):
     
     # Match the input url against the pattern
     if not re.match(pattern, url):
-        return 2
+        return 3
