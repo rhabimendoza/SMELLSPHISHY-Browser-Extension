@@ -73,7 +73,7 @@ document.addEventListener("DOMContentLoaded", function (){
                     manual_url.value = "";
                     manual_url.placeholder = "Invalid url.";
                 }
-                if(result === 1){
+                else if(result === 1){
                     window.location.href = `page_phishing.html?url=${encodeURIComponent(url)}&probability=${probability}`;
                 }
                 else if(result === 2){
