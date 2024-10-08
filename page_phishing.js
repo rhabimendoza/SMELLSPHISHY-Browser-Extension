@@ -11,9 +11,12 @@ document.addEventListener("DOMContentLoaded", function (){
     const params = new URLSearchParams(window.location.search);
     const url = params.get("url");
     const probability = params.get("probability");
+
+    // Format probability
+    const formattedProbability = (parseFloat(probability) * 100).toFixed(2);
     
     // Display the probability and url
-    received_probility.innerHTML = "URL is classified as " + probability + "% phishing";
+    received_probility.innerHTML = "URL is classified as " + formattedProbability + "% phishing";
     received_url.innerHTML = url;
 
     // Block the url navigated

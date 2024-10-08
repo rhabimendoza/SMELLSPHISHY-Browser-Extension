@@ -74,16 +74,16 @@ document.addEventListener("DOMContentLoaded", function (){
                     manual_url.placeholder = "Invalid url.";
                 }
                 if(result === 1){
-                    chrome.tabs.update(tabId, { url: `page_phishing.html?url=${encodeURIComponent(url)}&probability=${probability}`});;
+                    window.location.href = `page_phishing.html?url=${encodeURIComponent(url)}&probability=${probability}`;
                 }
                 else if(result === 2){
-                    chrome.tabs.update(tabId, { url: `page_warning.html?url=${encodeURIComponent(url)}&probability=${probability}`});;
+                    window.location.href = `page_warning.html?url=${encodeURIComponent(url)}&probability=${probability}`;
                 }
                 else{
                     result_text.textContent = "The URL is SAFE.";
                     document.body.insertAdjacentElement("afterbegin", result_text);
                 }
-                
+
             });
 
         }
