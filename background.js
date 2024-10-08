@@ -51,6 +51,9 @@ function checkURL(url, tabId){
 
                 if(!blockedUrls.includes(url)){
 
+                    // Show a temporary loading page
+                    chrome.tabs.update(tabId, { url: chrome.runtime.getURL("page_loading.html") });
+
                     // Send the url to python for checking
                     fetch("http://localhost:5000/check_url", {
                         method: "POST",
@@ -67,11 +70,36 @@ function checkURL(url, tabId){
                             chrome.tabs.update(tabId, { url: `page_phishing.html?url=${encodeURIComponent(url)}`});
                         }
 
+                        // Mark the url as safe and redirect user to it
+                        else{
+                            allowURL(url);
+                            chrome.tabs.create({ url: url }, (newTab) => {
+                                chrome.tabs.remove(tabId);
+                            });
+                        }
+
                     });
                 }
  
             });
             
+        }
+
+    });
+
+}
+
+// Store the url to allow user to visit it
+function allowURL(url){
+
+    // Get allowed urls
+    chrome.storage.local.get("allowedUrls", (result) => {
+        const allowedUrls = result.allowedUrls || [];
+
+        // Push the url to list so user can visit it
+        if (!allowedUrls.includes(url)) {
+            allowedUrls.push(url);
+            chrome.storage.local.set({ allowedUrls }, () => {});
         }
 
     });
