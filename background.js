@@ -65,12 +65,17 @@ function checkURL(url, tabId){
                     .then(response => response.json())
                     .then(data => {
                         
-                        // If detected as phishing, go to phishing page
-                        if(data.result === 1){
-                            chrome.tabs.update(tabId, { url: `page_phishing.html?url=${encodeURIComponent(url)}`});
-                        }
+                        // Get output of python
+                        const result = data.result;
+                        const probability = data.probability;
 
-                        // Mark the url as safe and redirect user to it
+                        // Check the result
+                        if(result === 1){
+                            chrome.tabs.update(tabId, { url: `page_phishing.html?url=${encodeURIComponent(url)}&probability=${probability}`});;
+                        }
+                        else if(result === 2){
+                            chrome.tabs.update(tabId, { url: `page_warning.html?url=${encodeURIComponent(url)}&probability=${probability}`});;
+                        }
                         else{
                             allowURL(url);
                             chrome.tabs.create({ url: url }, (newTab) => {
@@ -79,6 +84,7 @@ function checkURL(url, tabId){
                         }
 
                     });
+                    
                 }
  
             });

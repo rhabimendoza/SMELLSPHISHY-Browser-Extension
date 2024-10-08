@@ -64,19 +64,26 @@ document.addEventListener("DOMContentLoaded", function (){
             .then(response => response.json())
             .then(data => {
 
+                // Get output of python
+                const result = data.result;
+                const probability = data.probability;
+
                 // Get result and use for classification
-                if(data.result === 2){
+                if(result === 3){
                     manual_url.value = "";
                     manual_url.placeholder = "Invalid url.";
                 }
-                else if(data.result === 1){
-                    window.location.href = `page_phishing.html?url=${encodeURIComponent(url)}`;
-                } 
-                else if(data.result === 0){
+                if(result === 1){
+                    chrome.tabs.update(tabId, { url: `page_phishing.html?url=${encodeURIComponent(url)}&probability=${probability}`});;
+                }
+                else if(result === 2){
+                    chrome.tabs.update(tabId, { url: `page_warning.html?url=${encodeURIComponent(url)}&probability=${probability}`});;
+                }
+                else{
                     result_text.textContent = "The URL is SAFE.";
                     document.body.insertAdjacentElement("afterbegin", result_text);
-
                 }
+                
             });
 
         }

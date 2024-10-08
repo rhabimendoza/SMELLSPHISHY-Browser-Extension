@@ -19,32 +19,38 @@
             </div>
 
             <div class="warning-text">
-                <h1>Something Smells Phishy!</h1>
+                <h1>Warning: Something Smells Phishy!</h1>
             </div>
 
         </div>
 
         <div class="page-body">
 
-            <div class="page-text">
-                <h1>The URL has been successfully blocked</h1>
-            </div>
+            <div class="phishing-url">
 
-            <div class="detected-url">
-                <p id="blocked-url"></p>
-            </div>
+                <div class="page-text">
+                    <h1>This URL is potentially a phishing site</h1>
+                </div>
+                
+                <div class="detected-url">
+                    <p id="received-probability"></p>
+                    <p id="received-url"></p>
+                </div>
 
-            <div class="page-text">
-                <h6>By putting this URL in your blocked list, SmellsPhishy will stop you from accessing this site.</h6>
             </div>
             
-            <div class="page-btn">
-                <input id="close-button" type="button" value="Close this page">
+            <div class="warning-btn auto-phishing">
+                <input id="block-button" type="button" value="Block URL"></input>
+                <input id="ignore-button" type="button" value="Ignore"></input>
             </div>
-            
+
+            <div class="allowed-btn">
+                Not a Phishing URL?<input id="allow-button" type="button" value="Add this to allowed URLs"></input>
+            </div>
+
         </div>
 
-        <script src="page_blocked.js"></script>
+        <script src="page_warning.js"></script>
 
     </body>
 
