@@ -81,8 +81,7 @@ document.addEventListener("DOMContentLoaded", function (){
                 }
                 else{
                     result_text.textContent = "The URL is SAFE.";
-                    document.getElementById('result-safe').innerHTML = result_text.textContent;
-                    //document.body.insertAdjacentElement("afterbegin", result_text);
+                    document.body.insertAdjacentElement("afterbegin", result_text);
                 }
 
             });

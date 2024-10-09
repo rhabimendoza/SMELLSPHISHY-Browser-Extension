@@ -48,7 +48,7 @@ document.addEventListener("DOMContentLoaded", function (){
             const allowedUrls = result.allowedUrls || [];
 
             // Push the url to list so user can visit it
-            if (!allowedUrls.includes(url)) {
+            if (allowedUrls.includes(url)) {
                 allowedUrls.push(url);
                 chrome.storage.local.set({ allowedUrls }, () => {
                     window.location.href = `page_allowed.html?url=${encodeURIComponent(url)}`;
