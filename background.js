@@ -48,8 +48,7 @@ function checkURL(url, tabId){
                 if(allowedUrls.includes(url)){
                     return; 
                 }
-
-                if(!blockedUrls.includes(url)){
+                else if(!blockedUrls.includes(url)){
 
                     // Show a temporary loading page
                     chrome.tabs.update(tabId, { url: chrome.runtime.getURL("page_loading.html") });
@@ -102,11 +101,10 @@ function allowURL(url){
     chrome.storage.local.get("allowedUrls", (result) => {
         const allowedUrls = result.allowedUrls || [];
 
-        // Push the url to list so user can visit it
-        if (!allowedUrls.includes(url)) {
-            allowedUrls.push(url);
-            chrome.storage.local.set({ allowedUrls }, () => {});
-        }
+        // Push the url to list so user can visit it    
+        allowedUrls.push(url);
+        chrome.storage.local.set({ allowedUrls }, () => {});
+        
 
     });
 
