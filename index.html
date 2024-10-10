@@ -7,49 +7,166 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>SmellsPhishy</title>
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
         <style>
+            .toggle-btn{
+                position: relative;
+                width: 40px; 
+                height: 25px;
+                margin: 0 auto;
+                border-radius: 12.5px; 
+            }
+
+            input[type="checkbox"]{
+                width: 100%;
+                height: 100%;
+                position: absolute;
+                top: 0;
+                left: 0;
+                margin: 0;
+                cursor: pointer;
+                opacity: 0;
+                z-index: 2; 
+            }
+
+            #toggle-design span{
+                position: absolute;
+                top: 0;
+                right: 0;
+                bottom: 0;
+                left: 0;
+                overflow: hidden;
+                opacity: 1;
+                background-color: #DA0037;
+                border: 3px solid white;
+                border-radius: 12.5px; 
+                transition: 0.2s ease background-color, 0.2s ease opacity;
+            }
+
+            #toggle-design span:before,
+            #toggle-design span:after{
+                content: "";
+                position: absolute;
+                top: 50%; 
+                width: 20px; 
+                height: 20px; 
+                border-radius: 50%;
+                transition: 0.5s ease transform, 0.2s ease background-color; 
+                transform: translateY(-50%); 
+            }
+
+            #toggle-design span:before{
+                transform: translate(2px, -50%); 
+                z-index: 1; 
+            }
+
+            #toggle-design span:after{
+                background-color: white; 
+                transform: translate(-2px, -50%); 
+                z-index: 0; 
+            }
+
+            #toggle-check:checked + span{
+                background-color: white; 
+            }
+
+            #toggle-check:active + span{
+                opacity: 0.5; 
+            }
+
+            #toggle-check:checked + span:before{
+                transform: translate(20px, -50%); 
+            }
+
+            #toggle-check:checked + span:after{
+                background-color: #DA0037; 
+                transform: translate(15px, -50%); 
+            }
+
+            body{
+                font-family: 'Inter', sans-serif;
+            }
+
+            .header-div{
+                background-color: #DA0037;
+                margin: 0;
+            }
+            
             .logo-img{
                 width: 200px; 
+            }
+
+            #manual-url::placeholder{
+                color: gray;    
+                font-size: smaller; 
+            }
+
+            #check-button{
+                background-color: #DA0037;
+                color: white;
+                border: none;
+                border-radius: 5px;
+            }
+
+            #check-button:hover{
+                opacity: 0.8;
+            }
+
+            #automatic-container{
+                padding: 10px;
+                margin: 20px;
+                border: 2px solid #DA0037;
+                color: #DA0037;
+                text-align: center;
+                border-radius: 8px;
+                font-size: small;
+            }
+
+            p{
+                font-size: small;
+            }
+
+            a{
+                color: black;
             }
         </style>
     </head>
 
     <body>
 
-        <div class="d-flex justify-content-center align-items-center bg-danger py-1">
-            
-            <div>
-                <img src="images/header-logo.svg" class="img-fluid logo-img"/>
+        <div class="header-div d-flex justify-content-center align-items-center">
+
+            <div class="p-2">
+                <div>
+                    <img class="logo-img" src="images/header-logo.svg"/>
+                </div>
             </div>
 
-            <div class="form-check form-switch">
-                <input id="toggle-check" class="form-check-input" type="checkbox" role="switch">
-                <label class="form-check-label" for="toggle-check"></label>
+            <div class="p-2">
+                <div class="toggle-btn m-3" id="toggle-design">
+                    <input id="toggle-check" type="checkbox">
+                    <span></span>
+                </div>
             </div>
 
         </div>
 
-        <div class="d-flex justify-content-center">
-            
-            <div>
+        <div class="d-flex flex-column align-items-center"> 
 
-                <div id="manual-container">
-                    <input id="manual-url" type="text" autocomplete="off" class="m-2" placeholder="Enter url here...">
-                    <button id="check-button" type="button" class="btn btn-danger m-2">Check URL</button>
-                </div>
-        
-                <div class="border border-2 border-dark p-3">
-                    <p>Other options</p>
-                    <button id="unblock-button" type="button" class="btn btn-danger m-2">Unblock all URL</button>
-                    <button id="delete-button" type="button" class="btn btn-danger m-2">Delete all allowed URL</button>
-                </div>           
-        
-                <div>
-                    <button id="close-button" type="button" class="btn btn-danger m-2">Close</button>
-                </div>
-        
+            <div id="manual-container" class="text-center">
+                <input id="manual-url" class="my-2" type="text" autocomplete="off" placeholder="Enter suspicious URL">
+                <button id="check-button">Check</button>
             </div>
+            
 
+            <div id="automatic-container">
+                Automatic Detection is Enabled
+            </div>
+        
+            <div class="text-center mt-2 mb-1">
+                <p>Want to manage your URLs? <a href="page_urls.html"><b>Click here</b></a></p>
+            </div>
+            
         </div>
         
         <script src="index.js"></script>
