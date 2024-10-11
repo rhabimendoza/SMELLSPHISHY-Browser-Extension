@@ -11,6 +11,7 @@ document.addEventListener("DOMContentLoaded", function (){
     const params = new URLSearchParams(window.location.search);
     const url = params.get("url");
     const probability = params.get("probability");
+    const message = params.get("message");
 
     // Format probability
     const formattedProbability = (parseFloat(probability) * 100).toFixed(2);

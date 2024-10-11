@@ -14,24 +14,20 @@
             }
 
             .header-div{
-                background-color: #FFC107;
+                background-color: #198754;
             }
             
             .logo-img{
-                width: 150px; 
+                width: 200px; 
             }
 
             h3{
-                color: #FFC107;
-            }
-
-            .url-div{
-                border: 3px solid black;
-                border-radius: 5px;
+                color: #198754;
             }
 
             #received-url{
-                color: #FFC107;
+                display: inline-block; 
+                border: 3px solid black;
             }
 
             p{
@@ -63,21 +59,19 @@
 
         </div>
 
-        <h3 class="text-center m-3">URL Disallowed</h3>
+        <h3 id="page-title" class="text-center m-3"></h3>
 
-        <div class="url-div m-3">
-            <p id="received-url" class="text-center p-2"></p>
+        <div class="text-center">
+            <p id="received-url" class="text-center p-5"></p>
         </div>
 
-        <p class="text-center">
-            When a URL is disallowed and the automatic detection is enabled, it will have to go through classification before being accessible.
-        </p>
+        <p id="page-desc" class="text-center"></p>
 
         <div class="d-flex justify-content-center m-2">
             <button id="close-button" class="btn">Close this page</button>
         </div>
 
-        <script src="page_disallowed_unblocked.js"></script>
+        <script src="page_action.js"></script>
 
     </body>
 

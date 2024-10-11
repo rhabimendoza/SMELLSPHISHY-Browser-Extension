@@ -68,10 +68,10 @@ document.addEventListener("DOMContentLoaded", function (){
                     manual_url.placeholder = "URL is INVALID.";
                 }
                 else if(result === 1){
-                    window.location.href = `page_phishing.html?url=${encodeURIComponent(url)}&probability=${probability}`;
+                    window.location.href = `page_classification.html?url=${encodeURIComponent(url)}&probability=${probability}&message=phishing`;
                 }
                 else if(result === 2){
-                    window.location.href = `page_warning.html?url=${encodeURIComponent(url)}&probability=${probability}`;
+                    window.location.href = `page_classification.html?url=${encodeURIComponent(url)}&probability=${probability}&message=warning`;
                 }
                 else{
                     manual_url.value = "";
