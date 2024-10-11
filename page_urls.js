@@ -1,4 +1,4 @@
-document.addEventListener("DOMContentLoaded", function (){
+document.addEventListener("DOMContentLoaded", function(){
 
     // Get all components in html
     const search_box = document.getElementById('search-box');
@@ -27,8 +27,8 @@ document.addEventListener("DOMContentLoaded", function (){
                 const li = document.createElement('li');
                 
                 // Format url into lines of 30 characters
-                const formattedUrl = formatUrl(item.url, 30);
-                li.innerHTML = formattedUrl;
+                const formatted_url = formatUrl(item.url, 30);
+                li.innerHTML = formatted_url;
 
                 // Create a button depending on type
                 const button = document.createElement('button');
@@ -53,23 +53,23 @@ document.addEventListener("DOMContentLoaded", function (){
 
     }
 
-    // Helper function to format the url into lines of 30 characters
+    // Format the url into lines of 30 characters
     function formatUrl(url, limit){
 
         // Make storage variable
-        let formattedUrl = '';
+        let formatted_url = '';
 
         // Next line every 30 characters
         for(let i = 0; i < url.length; i += limit){
-            formattedUrl += url.slice(i, i + limit) + '<br>';
+            formatted_url += url.slice(i, i + limit) + '<br>';
         }
 
         // Return formatted
-        return formattedUrl;
+        return formatted_url;
     }
 
     // Unblock clicked url
-    function unblockUrl(url) {
+    function unblockUrl(url){
 
         // Get list of blocked url
         chrome.storage.local.get("blockedUrls", (result) => {
@@ -88,15 +88,18 @@ document.addEventListener("DOMContentLoaded", function (){
     }
     
     // Disallow a specific url
-    function disallowUrl(url) {
+    function disallowUrl(url){
 
-        // Update list of allowed urls and go to disallowed page
+        // Get list of allowed url
         chrome.storage.local.get('allowedUrls', (result) => {
             const allowedUrls = result.allowedUrls || [];
+
+            // Update the allowed list and go to disallowed page
             const updatedUrls = allowedUrls.filter(item => item !== url);
             chrome.storage.local.set({ allowedUrls: updatedUrls }, () => {
                 window.location.href = `page_disallowed.html?url=${encodeURIComponent(url)}`;
             });
+
         });
 
     }
@@ -105,11 +108,11 @@ document.addEventListener("DOMContentLoaded", function (){
     search_box.addEventListener('input', () => {
         
         // Turn input to lowercase
-        const searchTerm = search_box.value.toLowerCase();
+        const inp_find = search_box.value.toLowerCase();
 
         // Show query
         Array.from(url_list.children).forEach(li => {
-            li.style.display = li.textContent.toLowerCase().includes(searchTerm) ? '' : 'none';
+            li.style.display = li.textContent.toLowerCase().includes(inp_find) ? '' : 'none';
         });
 
     });
