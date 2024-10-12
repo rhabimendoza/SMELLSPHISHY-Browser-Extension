@@ -35,7 +35,7 @@ document.addEventListener("DOMContentLoaded", function(){
     }
 
     // Check validity and classification of url
-    function checkURL(){
+    async function checkURL(){
 
         // Get url and trim it
         var url = manual_url.value;
@@ -47,6 +47,13 @@ document.addEventListener("DOMContentLoaded", function(){
             manual_url.placeholder = "Input a url.";
         }
         else{
+
+            // Check if url is already listed
+            const in_list = await checkList();
+            if(in_list === 1){
+                window.location.href = "page_urls.html";
+                return; 
+            }
 
             // Send url to python
             fetch("http://localhost:5000/check_url", { 
@@ -80,6 +87,7 @@ document.addEventListener("DOMContentLoaded", function(){
                 else if(result == 0){
                     manual_url.value = "";
                     manual_url.placeholder = "URL is SAFE.";
+                    allowURL(url);
                 }
     
             });
@@ -88,6 +96,43 @@ document.addEventListener("DOMContentLoaded", function(){
 
     }
 
+    // Get list and check if url is already listed
+    async function checkList(){
+        return new Promise((resolve, reject) => {
+
+            // Get both allowed and blocked urls from storage
+            chrome.storage.local.get(["allowedUrls", "blockedUrls"], (result) => {
+                const allowedUrls = result.allowedUrls || [];
+                const blockedUrls = result.blockedUrls || [];
+    
+                // Check if the url is in either list
+                if(allowedUrls.includes(manual_url.value) || blockedUrls.includes(manual_url.value)){
+                    resolve(1);
+                }
+                else{
+                    resolve(0);
+                }
+            });
+
+        });
+
+    }
+
+    // Store the url to allow user to visit it
+	function allowURL(url){
+
+		// Get allowed urls
+		chrome.storage.local.get("allowedUrls", (result) => {
+			const allowedUrls = result.allowedUrls || [];
+
+			// Push the url to list so user can visit it
+			allowedUrls.push(url);
+			chrome.storage.local.set({ allowedUrls }, () => {});
+
+		});
+
+	}
+    
     // Get the state of checkbox and update ui
     toggle_check.addEventListener("change", function (){
         var isOn = toggle_check.checked;
