@@ -40,7 +40,7 @@ document.addEventListener("DOMContentLoaded", function(){
 	});
 
 	// Block the url navigated
-	function blockURL(){
+	function blockURL(url){
 
 		// Get blocked urls
 		chrome.storage.local.get("blockedUrls", (result) => {
@@ -60,7 +60,7 @@ document.addEventListener("DOMContentLoaded", function(){
 	}
 
 	// Store the url to allow user to visit it
-	function allowURL(){
+	function allowURL(url){
 
 		// Get allowed urls
 		chrome.storage.local.get("allowedUrls", (result) => {
@@ -94,12 +94,16 @@ document.addEventListener("DOMContentLoaded", function(){
 
 	// Add url to blocked
 	block_button.addEventListener("click", function (){
-		blockURL();
+		const params = new URLSearchParams(window.location.search);
+		const url = decodeURIComponent(params.get('url'));
+		blockURL(url);
 	});
 
 	// List the url in allowed
 	allow_button.addEventListener("click", function (){
-		allowURL();
+		const params = new URLSearchParams(window.location.search);
+		const url = decodeURIComponent(params.get('url'));
+		allowURL(url);
 	});
 
 	// Close the page

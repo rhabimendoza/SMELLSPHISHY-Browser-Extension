@@ -75,26 +75,25 @@ document.addEventListener("DOMContentLoaded", function(){
 
 
 
+ // Unblock clicked url
+ function unblockURL(url) {
 
-    // Unblock clicked url
-    function unblockURL(url) {
-
-        // Get list of blocked url
-        chrome.storage.local.get("blockedUrls", (result) => {
-            const blockedUrls = result.blockedUrls || [];
-            
-            // Unblock the url and go to unblocked page
-            const updatedBlockedUrls = blockedUrls.filter(item => item !== url);
-            chrome.storage.local.set({ blockedUrls: updatedBlockedUrls }, () => {
-                chrome.runtime.sendMessage({ action: "applyBlockingRules" }, () => {
-                    window.location.href = `page_unblocked.html?url=${encodeURIComponent(url)}`;
-                });
+    // Get list of blocked url
+    chrome.storage.local.get("blockedUrls", (result) => {
+        const blockedUrls = result.blockedUrls || [];
+        
+        // Unblock the url and go to unblocked page
+        const updatedBlockedUrls = blockedUrls.filter(item => item !== url);
+        chrome.storage.local.set({ blockedUrls: updatedBlockedUrls }, () => {
+            chrome.runtime.sendMessage({ action: "applyBlockingRules" }, () => {
+                window.location.href = `page_unblocked.html?url=${encodeURIComponent(url)}`;
             });
-           
         });
+       
+    });
 
-    }
-
+}
+    
 
 
 
