@@ -21,18 +21,18 @@ def check_url():
     
     # Check if url input is valid
     if validURL(url) == 3:
-        return jsonify({"result": 3, "probability": 0})
+        return jsonify({"result": 3})
 
     # Send the url to function for checking
-    result, probability = checkURLInput(url)
+    result, benign, phishing, features = checkURLInput(url)
 
-    # Return classification
-    if result == 1:
-        return jsonify({"result": 1, "probability": probability})
-    elif result == 2:
-        return jsonify({"result": 2, "probability": probability})
-    else:
-        return jsonify({"result": 0, "probability": 0}) 
+    # Return classification with probabilities and features
+    return jsonify({
+        "result": result,
+        "benign": benign,
+        "phishing": phishing,
+        "features": features
+    })
 
 # Run app
 if __name__ == '__main__':

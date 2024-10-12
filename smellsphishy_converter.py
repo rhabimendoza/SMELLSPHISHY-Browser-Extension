@@ -70,25 +70,27 @@ def checkURLInput(url):
     with open('smellsphishy_main.pkl', 'rb') as f:
         rf_model = pickle.load(f)
 
-    # Extract features from the URL
+    # Extract features from the url
     features = extract_features(url)
 
     # Reshape features for the model
     features = features.reshape(1, -1)
 
-    # Predict using the Random Forest model
+    # Predict using the mode
     probabilities = rf_model.predict_proba(features)
 
-    # Get the probability
-    prob1 = probabilities[0][1]
+    # Get the data to send
+    prob_benign = probabilities[0][0]
+    prob_phish = probabilities[0][1]
+    features = ["url length", "domain", "path"]
 
-    # Classify if warning only or phishing
-    if 0.71 <= prob1 <= 1.00:
-        return 1, prob1
-    elif 0.51 <= prob1 <= 0.70:
-        return 2, prob1
+    # Classify if phishing, warning, or safe
+    if 0.71 <= prob_phish <= 1.00:
+        return 1, prob_benign, prob_phish, features
+    elif 0.51 <= prob_phish <= 0.70:
+        return 2, prob_benign, prob_phish, features
     else:
-        return 0, prob1
+        return 0, prob_benign, prob_phish, features
 
 # Check if valid url
 def validURL(url):

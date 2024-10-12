@@ -1,76 +1,34 @@
-document.addEventListener("DOMContentLoaded", function (){
+document.addEventListener("DOMContentLoaded", function () {
+const params = new URLSearchParams(window.location.search);
+    
+  // Get the URL parameters
+const urlParams = new URLSearchParams(window.location.search);
 
-    // Get components in html
-    const received_probility = document.getElementById("received-probability");
+// Retrieve the parameters
+const url = decodeURIComponent(urlParams.get('url'));
+const result = decodeURIComponent(urlParams.get('result'));
+const benign = decodeURIComponent(urlParams.get('benign'));
+const phishing = decodeURIComponent(urlParams.get('phishing'));
+
+// Retrieve and parse the features parameter
+const featuresString = decodeURIComponent(urlParams.get('features'));
+const features = JSON.parse(featuresString); // Convert back to an object
+
+const message = decodeURIComponent(urlParams.get('message'));
+
+
+    const page_title = document.getElementById("page-title");
+    const benign_percent = document.getElementById("benign-percent");
+    const phishing_percent = document.getElementById("phishing-percent");
     const received_url = document.getElementById("received-url");
-    const block_button = document.getElementById("block-button");
-    const allow_button = document.getElementById("allow-button");
-    const ignore_button = document.getElementById("ignore-button");
 
-    // Get the data sent
-    const params = new URLSearchParams(window.location.search);
-    const url = params.get("url");
-    const probability = params.get("probability");
-    const message = params.get("message");
-
-    // Format probability
-    const formattedProbability = (parseFloat(probability) * 100).toFixed(2);
-    
-    // Display the probability and url
-    received_probility.innerHTML = "URL is classified as " + formattedProbability + "% phishing";
-    received_url.innerHTML = url;
-
-    // Block the url navigated
-    function blockURL(){
-
-        // Get blocked urls
-        chrome.storage.local.get("blockedUrls", (result) => {
-            const blockedUrls = result.blockedUrls || [];
-    
-            // Push the url to the list and go to blocked page
-            if(!blockedUrls.includes(url)){
-                blockedUrls.push(url);
-                chrome.storage.local.set({ blockedUrls }, () => {
-                    chrome.runtime.sendMessage({ action: "applyBlockingRules" }, () => {
-                        window.location.href = `page_blocked.html?url=${encodeURIComponent(url)}`;
-                    });
-                });
-            }
-
-        });
-
+    if(message == "phishing"){
+        page_title.innerHTML = "HELLO"
     }
 
-    // Store the url to allow user to visit it
-    function allowURL(){
-
-        // Get allowed urls
-        chrome.storage.local.get("allowedUrls", (result) => {
-            const allowedUrls = result.allowedUrls || [];
-
-            // Push the url to list so user can visit it           
-            allowedUrls.push(url);
-            chrome.storage.local.set({ allowedUrls }, () => {
-                window.location.href = `page_allowed.html?url=${encodeURIComponent(url)}`;
-            });   
-
-        });
-
-    }
-
-    // Add url to blocked
-    block_button.addEventListener("click", function (){
-        blockURL();
-    });
-
-    // List the url in allowed
-    allow_button.addEventListener("click", function (){
-        allowURL();
-    });
-
-    // Close the page
-    ignore_button.addEventListener("click", function (){
-        window.close();
-    });
-    
+    // Set content based on received data
+    benign_percent.innerHTML = benign;
+    phishing_percent.innerHTML = phishing; // Add this line to display phishing percentage
+    received_url.innerHTML = url; // Assuming you want to display the URL somewhere
+    page_title.innerHTML = message; // Set the page title or message
 });

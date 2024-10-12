@@ -1,4 +1,4 @@
-document.addEventListener("DOMContentLoaded", function (){
+document.addEventListener("DOMContentLoaded", function(){
 
     // Get all components in html
     const toggle_check = document.getElementById("toggle-check");
@@ -41,6 +41,7 @@ document.addEventListener("DOMContentLoaded", function (){
         var url = manual_url.value;
         url = url.trim();
 
+        // Check if url is not empty
         if(!url){
             manual_url.value = "";
             manual_url.placeholder = "Input a url.";
@@ -58,26 +59,29 @@ document.addEventListener("DOMContentLoaded", function (){
             .then(response => response.json())
             .then(data => {
 
-                // Get output of python
-                const result = data.result;
-                const probability = data.probability;
+                const result = data.result;             
+                const benign = data.benign;  
+                const phishing = data.phishing; 
+                const features = data.features;    
+                const featuresString = JSON.stringify(features); 
 
-                // Get result and use for classification
                 if(result === 3){
                     manual_url.value = "";
                     manual_url.placeholder = "URL is INVALID.";
                 }
                 else if(result === 1){
-                    window.location.href = `page_classification.html?url=${encodeURIComponent(url)}&probability=${probability}&message=phishing`;
+                    const message = "phishing";   
+                    window.location.href = `page_classification.html?url=${encodeURIComponent(url)}&benign=${encodeURIComponent(benign)}&phishing=${encodeURIComponent(phishing)}&features=${encodeURIComponent(featuresString)}&message=${encodeURIComponent(message)}`;
                 }
                 else if(result === 2){
-                    window.location.href = `page_classification.html?url=${encodeURIComponent(url)}&probability=${probability}&message=warning`;
+                    const message = "warning";   
+                    window.location.href = `page_classification.html?url=${encodeURIComponent(url)}&benign=${encodeURIComponent(benign)}&phishing=${encodeURIComponent(phishing)}&features=${encodeURIComponent(featuresString)}&message=${encodeURIComponent(message)}`;
                 }
-                else{
+                else if(result == 0){
                     manual_url.value = "";
                     manual_url.placeholder = "URL is SAFE.";
                 }
-
+    
             });
 
         }
