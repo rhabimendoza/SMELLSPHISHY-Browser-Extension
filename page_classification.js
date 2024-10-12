@@ -1,34 +1,110 @@
-document.addEventListener("DOMContentLoaded", function () {
-const params = new URLSearchParams(window.location.search);
-    
-  // Get the URL parameters
-const urlParams = new URLSearchParams(window.location.search);
+document.addEventListener("DOMContentLoaded", function(){
 
-// Retrieve the parameters
-const url = decodeURIComponent(urlParams.get('url'));
-const result = decodeURIComponent(urlParams.get('result'));
-const benign = decodeURIComponent(urlParams.get('benign'));
-const phishing = decodeURIComponent(urlParams.get('phishing'));
+	// Get components from html
+	const page_title = document.getElementById("page-title");
+	const received_url = document.getElementById("received-url");
+	const phishing_percent = document.getElementById("phishing-percent");
+	const benign_percent = document.getElementById("benign-percent");
+	const top_features = document.getElementById("top-features");
+	const block_button = document.getElementById("block-button");
+	const allow_button = document.getElementById("allow-button");
+	const close_button = document.getElementById("close-button");
 
-// Retrieve and parse the features parameter
-const featuresString = decodeURIComponent(urlParams.get('features'));
-const features = JSON.parse(featuresString); // Convert back to an object
+	// Get all sent data
+	const params = new URLSearchParams(window.location.search);
+	const url = decodeURIComponent(params.get('url'));
+	const benign = decodeURIComponent(params.get('benign'));
+	const phishing = decodeURIComponent(params.get('phishing'));
+	const featuresString = decodeURIComponent(params.get('features'));
+	const features = JSON.parse(featuresString);
+	const message = decodeURIComponent(params.get('message'));
 
-const message = decodeURIComponent(urlParams.get('message'));
+	// Set title of page
+	if(message == "phishing"){
+		page_title.innerHTML = "This URL is detected as PHISHING"
+	}
+	else if(message == "warning"){
+		page_title.innerHTML = "This URL is potentially a PHISHING SITE"
+	}
 
+	// Display url and probabilities
+	received_url.innerHTML = formatURL(url, 30); 
+	phishing_percent.innerHTML = (phishing * 100).toFixed(2) + "%";
+	benign_percent.innerHTML = (benign * 100).toFixed(2) + "%";
+	
+	// List the features
+	features.forEach(feature => {
+		const li = document.createElement("li");
+		li.textContent = feature;
+		top_features.appendChild(li); 
+	});
 
-    const page_title = document.getElementById("page-title");
-    const benign_percent = document.getElementById("benign-percent");
-    const phishing_percent = document.getElementById("phishing-percent");
-    const received_url = document.getElementById("received-url");
+	// Block the url navigated
+	function blockURL(){
 
-    if(message == "phishing"){
-        page_title.innerHTML = "HELLO"
-    }
+		// Get blocked urls
+		chrome.storage.local.get("blockedUrls", (result) => {
+			const blockedUrls = result.blockedUrls || [];
 
-    // Set content based on received data
-    benign_percent.innerHTML = benign;
-    phishing_percent.innerHTML = phishing; // Add this line to display phishing percentage
-    received_url.innerHTML = url; // Assuming you want to display the URL somewhere
-    page_title.innerHTML = message; // Set the page title or message
+			// Push the url to the list and go to blocked page
+			blockedUrls.push(url);
+			chrome.storage.local.set({ blockedUrls }, () => {
+				chrome.runtime.sendMessage({ action: "applyBlockingRules" }, () => {
+					const message = "blocked";
+					window.location.href = `page_action.html?url=${encodeURIComponent(url)}&message=${encodeURIComponent(message)}`;
+				});
+			});
+
+		});
+
+	}
+
+	// Store the url to allow user to visit it
+	function allowURL(){
+
+		// Get allowed urls
+		chrome.storage.local.get("allowedUrls", (result) => {
+			const allowedUrls = result.allowedUrls || [];
+
+			// Push the url to list so user can visit it
+			allowedUrls.push(url);
+			chrome.storage.local.set({ allowedUrls }, () => {
+				const message = "allowed"
+				window.location.href = `page_action.html?url=${encodeURIComponent(url)}&message=${encodeURIComponent(message)}`;
+			});
+
+		});
+
+	}
+
+	// Next line url every 30 char
+	function formatURL(url, limit){
+
+		// Make storage variable
+		let formatted_url = '';
+
+		// Next line every 30 characters
+		for(let i = 0; i < url.length; i += limit){
+			formatted_url += url.slice(i, i + limit) + '<br>';
+		}
+
+		// Return formatted
+		return formatted_url;
+	}
+
+	// Add url to blocked
+	block_button.addEventListener("click", function (){
+		blockURL();
+	});
+
+	// List the url in allowed
+	allow_button.addEventListener("click", function (){
+		allowURL();
+	});
+
+	// Close the page
+	close_button.addEventListener("click", function (){
+		window.close();
+	});
+
 });

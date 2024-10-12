@@ -11,11 +11,11 @@ document.addEventListener("DOMContentLoaded", function (){
     const url = params.get("url");
     const message = params.get("message");
 
-    if(message === "Blocked"){
+    if(message === "blocked"){
         page_title.innerText = "URL Blocked";
         page_desc.innerText = "By putting this URL in your blocked list, SmellsPhishy will stop you from accessing this site.";
     } 
-    else if(message === "Allowed"){
+    else if(message === "allowed"){
         page_title.innerText = "URL Allowed";
         page_desc.innerText = "By putting this URL in your allowed list, SmellsPhishy will allow you to proceed to the site without scanning.";
     }
