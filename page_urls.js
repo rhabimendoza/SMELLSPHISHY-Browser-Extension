@@ -48,7 +48,6 @@ document.addEventListener("DOMContentLoaded", function(){
                 url_list.appendChild(li);
         
             });
-        
         });
 
     }
@@ -66,26 +65,38 @@ document.addEventListener("DOMContentLoaded", function(){
 
 		// Return formatted
 		return formatted_url;
+
 	}
 
-    // Unblock clicked url
+    // Unblock a specific url
     function unblockURL(url){
 
-        // Get list of blocked url
-        chrome.storage.local.get("blockedUrls", (result) => {
-            const blockedUrls = result.blockedUrls || [];
+        // Get the currently blocked urls
+        chrome.storage.local.get("blockedUrls", (data) => {
+            const blockedUrls = data.blockedUrls || [];
             
-            // Unblock the url and go to unblocked page
-            const updatedBlockedUrls = blockedUrls.filter(item => item !== url);
-            chrome.storage.local.set({ blockedUrls: updatedBlockedUrls }, () => {
-                chrome.runtime.sendMessage({ action: "applyBlockingRules" }, () => {
-                    const message = "unblock";
-				    window.location.href = `page_action.html?url=${encodeURIComponent(url)}&message=${encodeURIComponent(message)}`;
-			    });
-            });
-        
-        });
+            // Remove the specified url from the list
+            const updatedBlockedUrls = blockedUrls.filter(url => url !== url);
 
+            // Update the storage with the new list
+            chrome.storage.local.set({ blockedUrls: updatedBlockedUrls }, () => {
+                chrome.declarativeNetRequest.getDynamicRules((rules) => {
+                    
+                    // Remove the rule
+                    const ruleIds = rules.filter(rule => rule.action?.type === "block" && rule.condition?.urlFilter === url).map(rule => rule.id);
+                    chrome.declarativeNetRequest.updateDynamicRules({
+                        removeRuleIds: ruleIds,
+                        addRules: []
+                    }, () => {
+                        const message = "unblock";
+                        window.location.href = `page_action.html?url=${encodeURIComponent(url)}&message=${encodeURIComponent(message)}`;
+                    
+                    });
+
+                });
+            });
+        });
+        
     }
     
     // Disallow a specific url
@@ -101,7 +112,6 @@ document.addEventListener("DOMContentLoaded", function(){
                 const message = "disallow";
 				window.location.href = `page_action.html?url=${encodeURIComponent(url)}&message=${encodeURIComponent(message)}`;
 			});
-
         });
 
     }

@@ -32,6 +32,7 @@ document.addEventListener("DOMContentLoaded", function(){
         toggle_check.checked = isOn;
         manual_url.value = "";
         manual_url.placeholder = "Enter suspicious URL";
+
     }
 
     // Check validity and classification of url
@@ -66,12 +67,14 @@ document.addEventListener("DOMContentLoaded", function(){
             .then(response => response.json())
             .then(data => {
 
+                // Get data from python
                 const result = data.result;             
                 const benign = data.benign;  
                 const phishing = data.phishing; 
                 const features = data.features;    
                 const featuresString = JSON.stringify(features); 
 
+                // Identify what to output
                 if(result === 3){
                     manual_url.value = "";
                     manual_url.placeholder = "URL is INVALID.";
@@ -115,7 +118,6 @@ document.addEventListener("DOMContentLoaded", function(){
             });
 
         });
-
     }
 
     // Store the url to allow user to visit it
@@ -128,7 +130,6 @@ document.addEventListener("DOMContentLoaded", function(){
 			// Push the url to list so user can visit it
 			allowedUrls.push(url);
 			chrome.storage.local.set({ allowedUrls }, () => {});
-
 		});
 
 	}

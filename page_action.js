@@ -48,6 +48,7 @@ document.addEventListener("DOMContentLoaded", function (){
 
         // Return formatted url
         return formatted_url;
+        
     }
 
     // Close the page

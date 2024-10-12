@@ -54,7 +54,6 @@ document.addEventListener("DOMContentLoaded", function(){
 					window.location.href = `page_action.html?url=${encodeURIComponent(url)}&message=${encodeURIComponent(message)}`;
 				});
 			});
-
 		});
 
 	}
@@ -72,7 +71,6 @@ document.addEventListener("DOMContentLoaded", function(){
 				const message = "allowed"
 				window.location.href = `page_action.html?url=${encodeURIComponent(url)}&message=${encodeURIComponent(message)}`;
 			});
-
 		});
 
 	}
@@ -90,6 +88,7 @@ document.addEventListener("DOMContentLoaded", function(){
 
 		// Return formatted
 		return formatted_url;
+		
 	}
 
 	// Add url to blocked

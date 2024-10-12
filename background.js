@@ -21,10 +21,22 @@ function applyUrlBlockingRules(){
             removeRuleIds: Array.from(Array(blockedUrls.length).keys()).map(i => i + 1),
             addRules: rules
         }, () =>{});
-
     });
 
 }
+
+// Receive message from javascript files for blocking
+chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+    if(message.action === "applyBlockingRules"){
+        applyUrlBlockingRules();
+        sendResponse({status: "Blocking rules updated"});
+    }
+});
+
+// Setup the extension when updated or installed
+chrome.runtime.onInstalled.addListener(() => {
+    applyUrlBlockingRules();
+});
 
 // Flag urls or allow access
 function checkURL(url, tabId){
@@ -109,23 +121,9 @@ function allowURL(url){
         // Push the url to list so user can visit it    
         allowedUrls.push(url);
         chrome.storage.local.set({ allowedUrls }, () => {});
-        
     });
 
 }
-
-// Setup the extension when updated or installed
-chrome.runtime.onInstalled.addListener(() => {
-    applyUrlBlockingRules();
-});
-
-// Receive message from javascript files for blocking
-chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-    if(message.action === "applyBlockingRules"){
-        applyUrlBlockingRules();
-        sendResponse({status: "Blocking rules updated"});
-    }
-});
 
 // Listen to all navigation events
 chrome.webNavigation.onBeforeNavigate.addListener((details) => {
