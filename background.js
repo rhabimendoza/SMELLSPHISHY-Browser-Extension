@@ -65,15 +65,20 @@ function checkURL(url, tabId){
                     .then(data => {
                         
                         // Get output of python
-                        const result = data.result;
-                        const probability = data.probability;
+                        const result = data.result;             
+                        const benign = data.benign;  
+                        const phishing = data.phishing; 
+                        const features = data.features;    
+                        const featuresString = JSON.stringify(features); 
 
                         // Check the result
                         if(result === 1){
-                            chrome.tabs.update(tabId, { url: `page_phishing.html?url=${encodeURIComponent(url)}&probability=${probability}`});;
+                            const message = "phishing";   
+                            chrome.tabs.update(tabId, { url: `page_classification.html?url=${encodeURIComponent(url)}&benign=${encodeURIComponent(benign)}&phishing=${encodeURIComponent(phishing)}&features=${encodeURIComponent(featuresString)}&message=${encodeURIComponent(message)}`});;
                         }
                         else if(result === 2){
-                            chrome.tabs.update(tabId, { url: `page_warning.html?url=${encodeURIComponent(url)}&probability=${probability}`});;
+                            const message = "warning"; 
+                            chrome.tabs.update(tabId, { url: `page_classification.html?url=${encodeURIComponent(url)}&benign=${encodeURIComponent(benign)}&phishing=${encodeURIComponent(phishing)}&features=${encodeURIComponent(featuresString)}&message=${encodeURIComponent(message)}`});;
                         }
                         else{
                             allowURL(url);
@@ -105,7 +110,6 @@ function allowURL(url){
         allowedUrls.push(url);
         chrome.storage.local.set({ allowedUrls }, () => {});
         
-
     });
 
 }
