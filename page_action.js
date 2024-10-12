@@ -15,10 +15,19 @@ document.addEventListener("DOMContentLoaded", function (){
         page_title.innerText = "URL Blocked";
         page_desc.innerText = "By putting this URL in your blocked list, SmellsPhishy will stop you from accessing this site.";
     } 
+    else if(message === "unblock"){
+        page_title.innerText = "URL Unblocked";
+        page_desc.innerText = "The URL will now be accessible and when the automatic detection is enabled, it will be scanned again.";
+    }
     else if(message === "allowed"){
         page_title.innerText = "URL Allowed";
-        page_desc.innerText = "By putting this URL in your allowed list, SmellsPhishy will allow you to proceed to the site without scanning.";
+        page_desc.innerText = "By putting this URL in your allowed list, SmellsPhishy will allow you to proceed to the site without scanning during automatic detection.";
     }
+    else if(message === "disallow"){
+        page_title.innerText = "URL Disallowed";
+        page_desc.innerText = "To access this again during automatic detection, it will have to be added to allowed list again.";
+    }
+
 
     // Format the url
     const formatted_url = formatUrl(url, 30);

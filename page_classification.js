@@ -77,7 +77,7 @@ document.addEventListener("DOMContentLoaded", function(){
 
 	}
 
-	// Next line url every 30 char
+	// Next line url 
 	function formatURL(url, limit){
 
 		// Make storage variable

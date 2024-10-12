@@ -1,11 +1,11 @@
 document.addEventListener("DOMContentLoaded", function(){
 
-    // Get all components in html
+    // Get components from html
     const search_box = document.getElementById('search-box');
     const url_list = document.getElementById('url-list');
 
     // Function to fetch and display url
-    function displayUrls(){
+    function displayURL(){
 
         // Get list
         chrome.storage.local.get(['blockedUrls', 'allowedUrls'], (result) => {
@@ -27,7 +27,7 @@ document.addEventListener("DOMContentLoaded", function(){
                 const li = document.createElement('li');
                 
                 // Format url into lines of 30 characters
-                const formatted_url = formatUrl(item.url, 30);
+                const formatted_url = formatURL(item.url, 30);
                 li.innerHTML = formatted_url;
 
                 // Create a button depending on type
@@ -35,12 +35,12 @@ document.addEventListener("DOMContentLoaded", function(){
                 if(item.type === 'blocked'){
                     button.textContent = 'Unblock';
                     button.className = 'unblock-button';
-                    button.onclick = () => unblockUrl(item.url);
+                    button.onclick = () => unblockURL(item.url);
                 } 
                 else{
                     button.textContent = 'Disallow';
                     button.className = 'disallow-button';
-                    button.onclick = () => disallowUrl(item.url);
+                    button.onclick = () => disallowURL(item.url);
                 }
 
                 // Create the row
@@ -53,23 +53,31 @@ document.addEventListener("DOMContentLoaded", function(){
 
     }
 
-    // Format the url into lines of 30 characters
-    function formatUrl(url, limit){
+	// Next line url format
+	function formatURL(url, limit){
 
-        // Make storage variable
-        let formatted_url = '';
+		// Make storage variable
+		let formatted_url = '';
 
-        // Next line every 30 characters
-        for(let i = 0; i < url.length; i += limit){
-            formatted_url += url.slice(i, i + limit) + '<br>';
-        }
+		// Next line every 30 characters
+		for(let i = 0; i < url.length; i += limit){
+			formatted_url += url.slice(i, i + limit) + '<br>';
+		}
 
-        // Return formatted
-        return formatted_url;
-    }
+		// Return formatted
+		return formatted_url;
+	}
+
+    
+
+
+
+
+
+
 
     // Unblock clicked url
-    function unblockUrl(url){
+    function unblockURL(url) {
 
         // Get list of blocked url
         chrome.storage.local.get("blockedUrls", (result) => {
@@ -86,9 +94,17 @@ document.addEventListener("DOMContentLoaded", function(){
         });
 
     }
-    
+
+
+
+
+
+
+
+
+
     // Disallow a specific url
-    function disallowUrl(url){
+    function disallowURL(url){
 
         // Get list of allowed url
         chrome.storage.local.get('allowedUrls', (result) => {
@@ -97,8 +113,9 @@ document.addEventListener("DOMContentLoaded", function(){
             // Update the allowed list and go to disallowed page
             const updatedUrls = allowedUrls.filter(item => item !== url);
             chrome.storage.local.set({ allowedUrls: updatedUrls }, () => {
-                window.location.href = `page_disallowed.html?url=${encodeURIComponent(url)}`;
-            });
+                const message = "disallow";
+				window.location.href = `page_action.html?url=${encodeURIComponent(url)}&message=${encodeURIComponent(message)}`;
+			});
 
         });
 
@@ -118,6 +135,6 @@ document.addEventListener("DOMContentLoaded", function(){
     });
 
     // Initial display of urls
-    displayUrls();
+    displayURL();
 
 });
