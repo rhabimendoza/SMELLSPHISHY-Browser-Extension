@@ -10,25 +10,8 @@ from gensim.utils import simple_preprocess
 
 WHITELIST = {
     'google.com',
-    'youtube.com',
-    'facebook.com',
-    'amazon.com',
-    'wikipedia.org',
-    'twitter.com',
-    'instagram.com',
-    'linkedin.com',
-    'microsoft.com',
-    'apple.com',
     'github.com',
-    'netflix.com',
-    'paypal.com',
-    'dropbox.com',
-    'wordpress.com',
-    'yahoo.com',
-    'ebay.com',
-    'reddit.com',
-    'twitch.tv',
-    'whatsapp.com'
+    'wikipedia.org'
 }
 
 class PhishingDetector:
