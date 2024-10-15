@@ -88,7 +88,7 @@ class PhishingDetector:
     def is_whitelisted(self, url):
         extracted = tldextract.extract(url)
         domain = f"{extracted.domain}.{extracted.suffix}"
-        return domain in WHITELIST
+        return domain in WHITELIST and not extracted.subdomain
 
     def clean_url(self, url):
         url = url.strip().lower()
@@ -262,6 +262,11 @@ class PhishingDetector:
     
     def predict(self, url):
 
+
+        extracted = tldextract.extract(url)
+        base_domain = f"{extracted.domain}.{extracted.suffix}"
+    
+
         if self.is_whitelisted(url):
             return {
                 "url": url,
@@ -271,38 +276,38 @@ class PhishingDetector:
                 "top_features": {},
                 "whitelisted": True
             }
-        
-        features = self.extract_features(url)
+    
+        if base_domain in WHITELIST and extracted.subdomain:
+            # Proceed with feature extraction and prediction
+            features = self.extract_features(url)
+            feature_df = pd.DataFrame([features])
 
-        # Convert features to dataframe
-        feature_df = pd.DataFrame([features])
+            # Ensure all expected columns are present
+            expected_columns = self.scaler.feature_names_in_
+            for col in expected_columns:
+                if col not in feature_df.columns:
+                    feature_df[col] = 0
 
-        # Ensure all expected columns are present
-        expected_columns = self.scaler.feature_names_in_
-        for col in expected_columns:
-            if col not in feature_df.columns:
-                feature_df[col] = 0
+            # Reorder columns to match the scaler expected order
+            feature_df = feature_df[expected_columns]
 
-        # Reorder columns to match the scaler expected order
-        feature_df = feature_df[expected_columns]
+            # Scale features
+            scaled_features = self.scaler.transform(feature_df)
 
-        # Scale features
-        scaled_features = self.scaler.transform(feature_df)
+            # Make prediction
+            prediction = self.model.predict(scaled_features)[0]
+            probability = self.model.predict_proba(scaled_features)[0]
 
-        # Make prediction
-        prediction = self.model.predict(scaled_features)[0]
-        probability = self.model.predict_proba(scaled_features)[0]
+            # Get top 5 features
+            top_features = self.get_top_features(scaled_features)
 
-        # Get top 5 features
-        top_features = self.get_top_features(scaled_features)
-
-        return {
-            "url": url,
-            "is_phishing": int(prediction),
-            "phishing_probability": float(probability[1]),
-            "benign_probability": float(probability[0]),
-            "top_features": top_features
-        }
+            return {
+                "url": url,
+                "is_phishing": int(prediction),
+                "phishing_probability": float(probability[1]),
+                "benign_probability": float(probability[0]),
+                "top_features": top_features
+            }
 
 def checkURLInput(url):
 
