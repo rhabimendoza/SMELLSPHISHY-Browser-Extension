@@ -8,6 +8,29 @@ import urllib.parse
 from gensim.models import Word2Vec
 from gensim.utils import simple_preprocess
 
+WHITELIST = {
+    'google.com',
+    'youtube.com',
+    'facebook.com',
+    'amazon.com',
+    'wikipedia.org',
+    'twitter.com',
+    'instagram.com',
+    'linkedin.com',
+    'microsoft.com',
+    'apple.com',
+    'github.com',
+    'netflix.com',
+    'paypal.com',
+    'dropbox.com',
+    'wordpress.com',
+    'yahoo.com',
+    'ebay.com',
+    'reddit.com',
+    'twitch.tv',
+    'whatsapp.com'
+}
+
 class PhishingDetector:
     
     def __init__(self, model_path, scaler_path, domain_model_path, path_model_path):
@@ -61,6 +84,11 @@ class PhishingDetector:
             'lol': 21, 'network': 20, 'gy': 20, 'sh': 18, 'at': 18,
             'id.vn': 18, 'host': 17, 'click': 16, 'es': 15, 'cyou': 15
         }
+
+    def is_whitelisted(self, url):
+        extracted = tldextract.extract(url)
+        domain = f"{extracted.domain}.{extracted.suffix}"
+        return domain in WHITELIST
 
     def clean_url(self, url):
         url = url.strip().lower()
@@ -233,6 +261,17 @@ class PhishingDetector:
         return top_features_with_values
     
     def predict(self, url):
+
+        if self.is_whitelisted(url):
+            return {
+                "url": url,
+                "is_phishing": 0,
+                "phishing_probability": 0.0,
+                "benign_probability": 1.0,
+                "top_features": {},
+                "whitelisted": True
+            }
+        
         features = self.extract_features(url)
 
         # Convert features to dataframe
@@ -269,14 +308,17 @@ def checkURLInput(url):
 
     # Setup
     detector = PhishingDetector(
-        model_path='smellsphishy_model.pkl',
-        scaler_path='smellsphishy_scaler.pkl',
-        domain_model_path='smellsphishy_domain.model',
-        path_model_path='smellsphishy_path.model'
+        model_path= 'model.pkl',
+        scaler_path= 'standard_scaler.pkl',
+        domain_model_path= 'domain.model',
+        path_model_path= 'path.model'
     )
 
     # Get result
     result = detector.predict(url)
+
+    if result.get('whitelisted', False):
+        return 0, 1.0, 0.0, []
     
     # Get output of model
     benign_prob = result['benign_probability'] 
