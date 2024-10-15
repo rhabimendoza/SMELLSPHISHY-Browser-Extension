@@ -313,10 +313,10 @@ def checkURLInput(url):
 
     # Setup
     detector = PhishingDetector(
-        model_path= 'model.pkl',
-        scaler_path= 'standard_scaler.pkl',
-        domain_model_path= 'domain.model',
-        path_model_path= 'path.model'
+        model_path= 'smellsphishy_model.pkl',
+        scaler_path= 'smellsphishy_scaler.pkl', 
+        domain_model_path= 'smellsphishy_domain.model',
+        path_model_path= 'smellsphishy_path.model'
     )
 
     # Get result
