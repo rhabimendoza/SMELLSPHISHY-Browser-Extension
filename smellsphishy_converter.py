@@ -88,6 +88,11 @@ class PhishingDetector:
     def is_whitelisted(self, url):
         extracted = tldextract.extract(url)
         domain = f"{extracted.domain}.{extracted.suffix}"
+        
+        # Consider 'www' as part of the main domain, not a subdomain
+        if extracted.subdomain == 'www':
+            return domain in WHITELIST
+        
         return domain in WHITELIST and not extracted.subdomain
 
     def clean_url(self, url):
@@ -261,11 +266,8 @@ class PhishingDetector:
         return top_features_with_values
     
     def predict(self, url):
-
-
         extracted = tldextract.extract(url)
         base_domain = f"{extracted.domain}.{extracted.suffix}"
-    
 
         if self.is_whitelisted(url):
             return {
@@ -277,39 +279,41 @@ class PhishingDetector:
                 "whitelisted": True
             }
     
-        if base_domain in WHITELIST and extracted.subdomain:
-            # Proceed with feature extraction and prediction
-            features = self.extract_features(url)
-            feature_df = pd.DataFrame([features])
+        # Remove the check for subdomains in whitelisted domains
+        features = self.extract_features(url)
+        feature_df = pd.DataFrame([features])
 
-            # Ensure all expected columns are present
-            expected_columns = self.scaler.feature_names_in_
-            for col in expected_columns:
-                if col not in feature_df.columns:
-                    feature_df[col] = 0
+        # Ensure all expected columns are present
+        expected_columns = self.scaler.feature_names_in_
+        for col in expected_columns:
+            if col not in feature_df.columns:
+                feature_df[col] = 0
 
-            # Reorder columns to match the scaler expected order
-            feature_df = feature_df[expected_columns]
+        # Reorder columns to match the scaler expected order
+        feature_df = feature_df[expected_columns]
 
-            # Scale features
-            scaled_features = self.scaler.transform(feature_df)
+        # Scale features
+        scaled_features = self.scaler.transform(feature_df)
 
-            # Make prediction
-            prediction = self.model.predict(scaled_features)[0]
-            probability = self.model.predict_proba(scaled_features)[0]
+        # Make prediction
+        prediction = self.model.predict(scaled_features)[0]
+        probability = self.model.predict_proba(scaled_features)[0]
 
-            # Get top 5 features
-            top_features = self.get_top_features(scaled_features)
+        # Get top 5 features
+        top_features = self.get_top_features(scaled_features)
 
-            return {
-                "url": url,
-                "is_phishing": int(prediction),
-                "phishing_probability": float(probability[1]),
-                "benign_probability": float(probability[0]),
-                "top_features": top_features
-            }
+        return {
+            "url": url,
+            "is_phishing": int(prediction),
+            "phishing_probability": float(probability[1]),
+            "benign_probability": float(probability[0]),
+            "top_features": top_features
+        }
 
 def checkURLInput(url):
+
+    if not validURL(url):
+        return 3, 0.0, 0.0, []  # Invalid URL
 
     # Setup
     detector = PhishingDetector(
@@ -341,10 +345,33 @@ def checkURLInput(url):
         return 0, benign_prob, phishing_prob, top_features
 
 def validURL(url):
+    try:
+        # Use urllib.parse to break down the URL
+        parsed = urllib.parse.urlparse(url)
+        
+        # Check if scheme and netloc are present
+        if not all([parsed.scheme, parsed.netloc]):
+            return False
+        
+        # Validate scheme
+        if parsed.scheme not in ['http', 'https']:
+            return False
+        
+        # Validate netloc (domain)
+        netloc_pattern = r'^([a-zA-Z0-9.-]+(@[a-zA-Z0-9.-]+)?\.)+[a-zA-Z]{2,}$'
+        if not re.match(netloc_pattern, parsed.netloc):
+            return False
+        
+        # Ensure there's no double slash after the scheme
+        if url.replace(parsed.scheme + '://', '', 1).startswith('//'):
+            return False
+        
+        # Additional check for valid characters in path and query
+        valid_path_query_pattern = r'^[a-zA-Z0-9\-._~:/?#\[\]@!$&\'()*+,;=%]*$'
+        if not re.match(valid_path_query_pattern, parsed.path + '?' + parsed.query):
+            return False
 
-    # Define a regex pattern for validating url
-    pattern = re.compile(r'^(http|https)://[a-zA-Z0-9-._~:/?#@!$&\'()*+,;=%]+$')
-    
-    # Match the input url against the pattern
-    if not re.match(pattern, url):
-        return 3
+        return True
+    except Exception:
+        # If any exception occurs during parsing, consider it invalid
+        return False
