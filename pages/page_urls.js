@@ -26,7 +26,7 @@ document.addEventListener("DOMContentLoaded", function(){
                 // Create list item
                 const li = document.createElement('li');
                 
-                // Format url into lines of 30 characters
+                // Format url into lines of characters
                 const formatted_url = formatURL(item.url, 30);
                 li.innerHTML = formatted_url;
 
@@ -58,7 +58,7 @@ document.addEventListener("DOMContentLoaded", function(){
 		// Make storage variable
 		let formatted_url = '';
 
-		// Next line every 30 characters
+		// Next line characters
 		for(let i = 0; i < url.length; i += limit){
 			formatted_url += url.slice(i, i + limit) + '<br>';
 		}

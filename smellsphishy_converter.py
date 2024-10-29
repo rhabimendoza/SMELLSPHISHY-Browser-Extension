@@ -62,6 +62,7 @@ class PhishingDetector:
             'id.vn': 18, 'host': 17, 'click': 16, 'es': 15, 'cyou': 15
         }
 
+    # Url preparation
     def clean_url(self, url):
         url = url.strip().lower()
         url = url.split('#')[0]
@@ -69,7 +70,6 @@ class PhishingDetector:
         if not url.startswith(('http://', 'https://')):
             url = 'http://' + url
         return url
-
     def normalize_url(self, url):
         parsed = urllib.parse.urlparse(url)
         path = parsed.path if parsed.path else '/'
@@ -84,7 +84,6 @@ class PhishingDetector:
             query,
             ''
         ))
-
     def extract_url_components(self, url):
         parsed = urllib.parse.urlparse(url)
         extracted = tldextract.extract(parsed.netloc)
@@ -96,7 +95,6 @@ class PhishingDetector:
             'path': parsed.path,
             'query': parsed.query
         }
-
     def preprocess_url(self, url):
         cleaned_url = self.clean_url(url)
         normalized_url = self.normalize_url(cleaned_url)
@@ -106,16 +104,13 @@ class PhishingDetector:
         components['domain_length'] = len(components['domain'])
         components['num_subdomains'] = len(components['subdomain'].split('.')) if components['subdomain'] else 0
         return components
-
     def calculate_entropy(self, string):
         prob = [float(string.count(c)) / len(string) for c in dict.fromkeys(list(string))]
         entropy = - sum([p * np.log(p) / np.log(2.0) for p in prob if p > 0])
         return entropy
-
     def calculate_consonant_ratio(self, string):
         consonants = set('bcdfghjklmnpqrstvwxyzBCDFGHJKLMNPQRSTVWXYZ')
         return sum(1 for c in string if c in consonants) / len(string) if string else 0
-
     def calculate_tld_score(self, tld):
         benign_freq = self.benign_tlds.get(tld, 0) / self.TOTAL_BENIGN
         malicious_freq = self.combined_phishing_adversarial_tlds.get(tld, 0) / self.TOTAL_COMBINED_PHISHING_ADVERSARIAL
@@ -124,16 +119,16 @@ class PhishingDetector:
         if benign_freq > 0 and malicious_freq > 0:
             return np.log(benign_freq / malicious_freq)
         return 1 if benign_freq > 0 else -1
-
     def generate_embeddings(self, tokens, model):
         embeddings = [model.wv[token] for token in tokens if token in model.wv]
         return np.mean(embeddings, axis=0) if embeddings else np.zeros(model.vector_size)
-
+    
+    # Feature extraction
     def extract_features(self, url):
         preprocessed = self.preprocess_url(url)
         features = {}
         
-        # URL features
+        # Url features
         features['url_length'] = preprocessed['url_length']
         features['url_entropy'] = self.calculate_entropy(preprocessed['url'])
         features['char_diversity'] = len(set(preprocessed['url'].lower())) / len(preprocessed['url']) if preprocessed['url'] else 0
@@ -198,14 +193,16 @@ class PhishingDetector:
         for i, value in enumerate(path_embedding):
             features[f'path_emb_{i}'] = value
 
+        # Return features
         return features
     
+    # Top features
     def get_top_features(self, feature_values, n=5):
         
         # Calculate shap values for this specific prediction
         shap_values = self.explainer.shap_values(feature_values)
         
-        # Handle the shape
+        # Handle the shap
         shap_values = np.abs(shap_values[0])  
         
         # Sum the absolute shap values across both classes
@@ -230,8 +227,10 @@ class PhishingDetector:
             for feature, importance in top_features
         }
         
+        # Return feature with values
         return top_features_with_values
     
+    # Make prediction
     def predict(self, url):
         features = self.extract_features(url)
         feature_df = pd.DataFrame([features])
@@ -264,15 +263,17 @@ class PhishingDetector:
         }
 
 def checkURLInput(url):
+
+    # Invalid checking
     if not validURL(url):
-        return 3, 0.0, 0.0, []  # Invalid URL
+        return 3, 0.0, 0.0, [] 
 
     # Setup
     detector = PhishingDetector(
-        model_path= 'outputs/model.pkl',
-        scaler_path= 'outputs/standard_scaler.pkl', 
-        domain_model_path= 'outputs/domain.model',
-        path_model_path= 'outputs/path.model'
+        model_path = 'outputs/model.pkl',
+        scaler_path = 'outputs/standard_scaler.pkl', 
+        domain_model_pat = 'outputs/domain.model',
+        path_model_path = 'outputs/path.model'
     )
 
     # Get result
@@ -294,8 +295,10 @@ def checkURLInput(url):
         return 0, benign_prob, phishing_prob, top_features
 
 def validURL(url):
+    
     try:
-        # Use urllib.parse to break down the URL
+
+        # Use urllib parse to break down the url
         parsed = urllib.parse.urlparse(url)
         
         # Check if scheme and netloc are present
@@ -306,7 +309,7 @@ def validURL(url):
         if parsed.scheme not in ['http', 'https']:
             return False
         
-        # Validate netloc (domain)
+        # Validate netloc
         netloc_pattern = r'^([a-zA-Z0-9.-]+(@[a-zA-Z0-9.-]+)?\.)+[a-zA-Z]{2,}$'
         if not re.match(netloc_pattern, parsed.netloc):
             return False
@@ -320,7 +323,10 @@ def validURL(url):
         if not re.match(valid_path_query_pattern, parsed.path + '?' + parsed.query):
             return False
 
+        # Return if valid
         return True
+    
     except Exception:
-        # If any exception occurs during parsing, consider it invalid
+
+        # If any exception occurs during parsing then consider it invalid
         return False

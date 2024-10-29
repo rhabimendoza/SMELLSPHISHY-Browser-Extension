@@ -1,4 +1,4 @@
-document.addEventListener("DOMContentLoaded", function(){
+document.addEventListener("DOMContentLoaded", function (){
 
 	// Get components from html
 	const page_title = document.getElementById("page-title");
@@ -81,7 +81,7 @@ document.addEventListener("DOMContentLoaded", function(){
 		// Make storage variable
 		let formatted_url = '';
 
-		// Next line every 30 characters
+		// Next line characters
 		for(let i = 0; i < url.length; i += limit){
 			formatted_url += url.slice(i, i + limit) + '<br>';
 		}
