@@ -272,7 +272,7 @@ def checkURLInput(url):
     detector = PhishingDetector(
         model_path = 'outputs/model.pkl',
         scaler_path = 'outputs/standard_scaler.pkl', 
-        domain_model_pat = 'outputs/domain.model',
+        domain_model_path = 'outputs/domain.model',
         path_model_path = 'outputs/path.model'
     )
 
