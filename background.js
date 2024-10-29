@@ -25,19 +25,6 @@ function applyUrlBlockingRules(){
 
 }
 
-// Receive message from javascript files for blocking
-chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-    if(message.action === "applyBlockingRules"){
-        applyUrlBlockingRules();
-        sendResponse({status: "Blocking rules updated"});
-    }
-});
-
-// Setup the extension when updated or installed
-chrome.runtime.onInstalled.addListener(() => {
-    applyUrlBlockingRules();
-});
-
 // Flag urls or allow access
 function checkURL(url, tabId){
 
@@ -124,6 +111,19 @@ function allowURL(url){
     });
 
 }
+
+// Receive message from javascript files for blocking
+chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+    if(message.action === "applyBlockingRules"){
+        applyUrlBlockingRules();
+        sendResponse({status: "Blocking rules updated"});
+    }
+});
+
+// Setup the extension when updated or installed
+chrome.runtime.onInstalled.addListener(() => {
+    applyUrlBlockingRules();
+});
 
 // Listen to all navigation events
 chrome.webNavigation.onBeforeNavigate.addListener((details) => {

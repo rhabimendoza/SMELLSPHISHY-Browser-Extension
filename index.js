@@ -35,6 +35,20 @@ document.addEventListener("DOMContentLoaded", function(){
 
     }
 
+    // Store the url to allow user to visit it
+	function allowURL(url){
+
+		// Get allowed urls
+		chrome.storage.local.get("allowedUrls", (result) => {
+			const allowedUrls = result.allowedUrls || [];
+
+			// Push the url to list so user can visit it
+			allowedUrls.push(url);
+			chrome.storage.local.set({ allowedUrls }, () => {});
+		});
+
+	}
+
     // Check validity and classification of url
     async function checkURL(){
 
@@ -87,7 +101,7 @@ document.addEventListener("DOMContentLoaded", function(){
                     const message = "warning";   
                     window.location.href = `pages/page_classification.html?url=${encodeURIComponent(url)}&benign=${encodeURIComponent(benign)}&phishing=${encodeURIComponent(phishing)}&features=${encodeURIComponent(featuresString)}&message=${encodeURIComponent(message)}`;
                 }
-                else if(result == 0){
+                else{
                     manual_url.value = "";
                     manual_url.placeholder = "URL is SAFE.";
                     allowURL(url);
@@ -119,20 +133,6 @@ document.addEventListener("DOMContentLoaded", function(){
 
         });
     }
-
-    // Store the url to allow user to visit it
-	function allowURL(url){
-
-		// Get allowed urls
-		chrome.storage.local.get("allowedUrls", (result) => {
-			const allowedUrls = result.allowedUrls || [];
-
-			// Push the url to list so user can visit it
-			allowedUrls.push(url);
-			chrome.storage.local.set({ allowedUrls }, () => {});
-		});
-
-	}
     
     // Get the state of checkbox and update ui
     toggle_check.addEventListener("change", function (){
