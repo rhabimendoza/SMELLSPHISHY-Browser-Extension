@@ -63,7 +63,7 @@ function checkURL(url, tabId){
                 else if(!blockedUrls.includes(url)){
 
                     // Show a temporary loading page
-                    chrome.tabs.update(tabId, { url: chrome.runtime.getURL("page_loading.html") });
+                    chrome.tabs.update(tabId, { url: chrome.runtime.getURL("pages/page_loading.html") });
 
                     // Send the url to python for checking
                     fetch("http://localhost:5000/check_url", {
@@ -86,11 +86,11 @@ function checkURL(url, tabId){
                         // Check the result
                         if(result === 1){
                             const message = "phishing";   
-                            chrome.tabs.update(tabId, { url: `page_classification.html?url=${encodeURIComponent(url)}&benign=${encodeURIComponent(benign)}&phishing=${encodeURIComponent(phishing)}&features=${encodeURIComponent(featuresString)}&message=${encodeURIComponent(message)}`});;
+                            chrome.tabs.update(tabId, { url: `pages/page_classification.html?url=${encodeURIComponent(url)}&benign=${encodeURIComponent(benign)}&phishing=${encodeURIComponent(phishing)}&features=${encodeURIComponent(featuresString)}&message=${encodeURIComponent(message)}`});;
                         }
                         else if(result === 2){
                             const message = "warning"; 
-                            chrome.tabs.update(tabId, { url: `page_classification.html?url=${encodeURIComponent(url)}&benign=${encodeURIComponent(benign)}&phishing=${encodeURIComponent(phishing)}&features=${encodeURIComponent(featuresString)}&message=${encodeURIComponent(message)}`});;
+                            chrome.tabs.update(tabId, { url: `pages/page_classification.html?url=${encodeURIComponent(url)}&benign=${encodeURIComponent(benign)}&phishing=${encodeURIComponent(phishing)}&features=${encodeURIComponent(featuresString)}&message=${encodeURIComponent(message)}`});;
                         }
                         else{
                             allowURL(url);

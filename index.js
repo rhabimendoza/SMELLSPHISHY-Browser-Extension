@@ -52,7 +52,7 @@ document.addEventListener("DOMContentLoaded", function(){
             // Check if url is already listed
             const in_list = await checkList();
             if(in_list === 1){
-                window.location.href = "page_urls.html";
+                window.location.href = "pages/page_urls.html";
                 return; 
             }
 
@@ -81,11 +81,11 @@ document.addEventListener("DOMContentLoaded", function(){
                 }
                 else if(result === 1){
                     const message = "phishing";   
-                    window.location.href = `page_classification.html?url=${encodeURIComponent(url)}&benign=${encodeURIComponent(benign)}&phishing=${encodeURIComponent(phishing)}&features=${encodeURIComponent(featuresString)}&message=${encodeURIComponent(message)}`;
+                    window.location.href = `pages/page_classification.html?url=${encodeURIComponent(url)}&benign=${encodeURIComponent(benign)}&phishing=${encodeURIComponent(phishing)}&features=${encodeURIComponent(featuresString)}&message=${encodeURIComponent(message)}`;
                 }
                 else if(result === 2){
                     const message = "warning";   
-                    window.location.href = `page_classification.html?url=${encodeURIComponent(url)}&benign=${encodeURIComponent(benign)}&phishing=${encodeURIComponent(phishing)}&features=${encodeURIComponent(featuresString)}&message=${encodeURIComponent(message)}`;
+                    window.location.href = `pages/page_classification.html?url=${encodeURIComponent(url)}&benign=${encodeURIComponent(benign)}&phishing=${encodeURIComponent(phishing)}&features=${encodeURIComponent(featuresString)}&message=${encodeURIComponent(message)}`;
                 }
                 else if(result == 0){
                     manual_url.value = "";
