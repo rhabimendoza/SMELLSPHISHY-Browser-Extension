@@ -53,7 +53,7 @@ function checkURL(url, tabId){
                     chrome.tabs.update(tabId, { url: chrome.runtime.getURL("pages/page_loading.html") });
 
                     // Send the url to python for checking
-                    fetch("http://localhost:5000/check_url", {
+                    fetch("https://smellsphishy-api.onrender.com/check_url", {
                         method: "POST",
                         headers: {
                             "Content-Type": "application/json",

@@ -71,7 +71,7 @@ document.addEventListener("DOMContentLoaded", function(){
             }
 
             // Send url to python
-            fetch("http://localhost:5000/check_url", { 
+            fetch("https://smellsphishy-api.onrender.com/check_url", { 
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
