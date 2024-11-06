@@ -90,8 +90,7 @@ function checkURL(url, tabId){
                     
                 }
  
-            });
-            
+            });  
         }
 
     });

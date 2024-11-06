@@ -2,7 +2,7 @@
     "manifest_version": 3,
     "version": "1.0.0",
     "name": "SmellsPhishy",
-    "author": "Thesis Group 4",
+    "author": "Rhabi Mendoza, Jef Escueta, Shane Delos Reyes, Zen Ubungen",
     "description": "Adversarially trained phishing URL browser extension.",
     "icons": {
         "16": "images/logo-white.png",

@@ -48,6 +48,7 @@ document.addEventListener("DOMContentLoaded", function(){
                 url_list.appendChild(li);
         
             });
+
         });
 
     }
@@ -80,6 +81,7 @@ document.addEventListener("DOMContentLoaded", function(){
 
             // Update the storage with the new list
             chrome.storage.local.set({ blockedUrls: updatedBlockedUrls }, () => {
+                
                 chrome.declarativeNetRequest.getDynamicRules((rules) => {
                     
                     // Remove the rule
@@ -94,7 +96,9 @@ document.addEventListener("DOMContentLoaded", function(){
                     });
 
                 });
+
             });
+
         });
         
     }
