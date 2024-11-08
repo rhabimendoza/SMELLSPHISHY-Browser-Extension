@@ -23,19 +23,19 @@
 document.addEventListener("DOMContentLoaded", function(){
 
     // Get components from html
-    const search_box = document.getElementById('search-box');
-    const url_list = document.getElementById('url-list');
+    var search_box = document.getElementById('search-box');
+    var url_list = document.getElementById('url-list');
 
     // Function to fetch and display url
     function displayURL(){
 
         // Get list
         chrome.storage.local.get(['blockedUrls', 'allowedUrls'], (result) => {
-            const blockedUrls = result.blockedUrls || [];
-            const allowedUrls = result.allowedUrls || [];
+            var blockedUrls = result.blockedUrls || [];
+            var allowedUrls = result.allowedUrls || [];
             
             // Combine and sort url
-            const combinedUrls = [...blockedUrls.map(url => ({ url, type: 'blocked' })), 
+            var combinedUrls = [...blockedUrls.map(url => ({ url, type: 'blocked' })), 
                                    ...allowedUrls.map(url => ({ url, type: 'allowed' }))];
             combinedUrls.sort((a, b) => a.url.localeCompare(b.url));
 
@@ -46,28 +46,28 @@ document.addEventListener("DOMContentLoaded", function(){
             combinedUrls.forEach(item => {
 
                 // Create list item
-                const li = document.createElement('li');
+                var liLink = document.createElement('li');
                 
                 // Format url into lines of characters
-                const formatted_url = formatURL(item.url, 30);
-                li.innerHTML = formatted_url;
+                var formattedUrl = formatURL(item.url, 30);
+                liLink.innerHTML = formattedUrl;
 
                 // Create a button depending on type
-                const button = document.createElement('button');
+                var buttonUrl = document.createElement('button');
                 if(item.type === 'blocked'){
-                    button.textContent = 'Unblock';
-                    button.className = 'unblock-button';
-                    button.onclick = () => unblockURL(item.url);
+                    buttonUrl.textContent = 'Unblock';
+                    buttonUrl.className = 'unblock-button';
+                    buttonUrl.onclick = () => unblockURL(item.url);
                 } 
                 else{
-                    button.textContent = 'Disallow';
-                    button.className = 'disallow-button';
-                    button.onclick = () => disallowURL(item.url);
+                    buttonUrl.textContent = 'Disallow';
+                    buttonUrl.className = 'disallow-button';
+                    buttonUrl.onclick = () => disallowURL(item.url);
                 }
 
                 // Create the row
-                li.appendChild(button);
-                url_list.appendChild(li);
+                liLink.appendChild(buttonUrl);
+                url_list.appendChild(liLink);
         
             });
 
@@ -76,28 +76,29 @@ document.addEventListener("DOMContentLoaded", function(){
     }
 
     // Unblock a specific url
-    function unblockURL(url){
+    function unblockURL(urlItem){
 
         // Get the currently blocked urls
         chrome.storage.local.get("blockedUrls", (data) => {
-            const blockedUrls = data.blockedUrls || [];
+            var blockedUrls = data.blockedUrls || [];
             
             // Remove the specified url from the list
-            const updatedBlockedUrls = blockedUrls.filter(url => url !== url);
+            var updatedUrls = blockedUrls.filter(item => item !== urlItem);
 
             // Update the storage with the new list
-            chrome.storage.local.set({ blockedUrls: updatedBlockedUrls }, () => {
+            chrome.storage.local.set({ blockedUrls: updatedUrls }, () => {
                 
                 chrome.declarativeNetRequest.getDynamicRules((rules) => {
                     
                     // Remove the rule
-                    const ruleIds = rules.filter(rule => rule.action?.type === "block" && rule.condition?.urlFilter === url).map(rule => rule.id);
+                    var ruleIds = rules.filter(rule => rule.action?.type === "block" && rule.condition?.urlFilter === url).map(rule => rule.id);
                     chrome.declarativeNetRequest.updateDynamicRules({
                         removeRuleIds: ruleIds,
                         addRules: []
                     }, () => {
-                        const message = "unblock";
-                        window.location.href = `page_action.html?url=${encodeURIComponent(url)}&message=${encodeURIComponent(message)}`;
+                        var messageDisplay = "unblock";
+                        window.location.href = `page_action.html?url=${encodeURIComponent(urlItem)}
+                        &message=${encodeURIComponent(messageDisplay)}`;
                     
                     });
 
@@ -110,17 +111,18 @@ document.addEventListener("DOMContentLoaded", function(){
     }
     
     // Disallow a specific url
-    function disallowURL(url){
+    function disallowURL(urlItem){
 
         // Get list of allowed url
         chrome.storage.local.get('allowedUrls', (result) => {
-            const allowedUrls = result.allowedUrls || [];
+            var allowedUrls = result.allowedUrls || [];
 
             // Update the allowed list and go to disallowed page
-            const updatedUrls = allowedUrls.filter(item => item !== url);
+            var updatedUrls = allowedUrls.filter(item => item !== urlItem);
             chrome.storage.local.set({ allowedUrls: updatedUrls }, () => {
-                const message = "disallow";
-				window.location.href = `page_action.html?url=${encodeURIComponent(url)}&message=${encodeURIComponent(message)}`;
+                var messageDisplay = "disallow";
+				window.location.href = `page_action.html?url=${encodeURIComponent(urlItem)}
+                &message=${encodeURIComponent(messageDisplay)}`;
 			});
         });
 
@@ -130,11 +132,11 @@ document.addEventListener("DOMContentLoaded", function(){
     search_box.addEventListener('input', () => {
         
         // Turn input to lowercase
-        const inp_find = search_box.value.toLowerCase();
+        var stringFind = search_box.value.toLowerCase();
 
         // Show query
         Array.from(url_list.children).forEach(li => {
-            li.style.display = li.textContent.toLowerCase().includes(inp_find) ? '' : 'none';
+            li.style.display = li.textContent.toLowerCase().includes(stringFind) ? '' : 'none';
         });
 
     });
