@@ -12,14 +12,14 @@
  **/
 
 // Next line url
-function formatURL(urlInput, limitLen){
+function formatURL(url, limit){
 
     // Make storage variable
-    var formatted_url = '';
+    let formatted_url = '';
     
     // Next line characters
-    for(var i = 0; i < urlInput.length; i += limitLen){
-        formatted_url += urlInput.slice(i, i + limitLen) + '<br>';
+    for(let i = 0; i < url.length; i += limit){
+        formatted_url += url.slice(i, i + limit) + '<br>';
     }
 
     // Return formatted url
