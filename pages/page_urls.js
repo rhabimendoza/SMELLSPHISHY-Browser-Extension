@@ -1,3 +1,25 @@
+/** 
+    Program Title: page_urls.js
+    Main Purpose: Functionality of page_urls.html
+    Programmer: Rhabi Mendoza
+    Date Written: September 30, 2024
+    Date Revised: November 8, 2024
+
+    Purpose:
+        a. Allow user to filter block and allowed url using search box
+        b. Unblock or disallow a url
+    Data Structures:
+        a. allowedUrls - list of allowed urls
+        b. blockedUrls - list of blocked urls
+        c. combinedUrls - list of combined blocked and allowed urls
+    Algorithms:
+        a. displayURL - get list of blocked and allowed urls and display with button
+        b. unblockURL - unblock the url
+        c. disallowURL - disallow the url
+    Control:
+        a. Event listeners handle user interactions 
+ **/
+
 document.addEventListener("DOMContentLoaded", function(){
 
     // Get components from html
@@ -52,22 +74,6 @@ document.addEventListener("DOMContentLoaded", function(){
         });
 
     }
-
-	// Next line url format
-	function formatURL(url, limit){
-
-		// Make storage variable
-		let formatted_url = '';
-
-		// Next line characters
-		for(let i = 0; i < url.length; i += limit){
-			formatted_url += url.slice(i, i + limit) + '<br>';
-		}
-
-		// Return formatted
-		return formatted_url;
-
-	}
 
     // Unblock a specific url
     function unblockURL(url){

@@ -1,3 +1,28 @@
+/** 
+    Program Title: index.js
+    Main Purpose: Functionality of index.html
+    Programmer: Rhabi Mendoza
+    Date Written: September 30, 2024
+    Date Revised: November 8, 2024
+
+    Purpose:
+        a. Display components based on toggled mode
+        b. Classify input url
+        c. Redirect users to url list
+    Data Structures:
+        a. allowedUrls - list of allowed urls
+        b. blockedUrls - list of blocked urls
+        c. data - storage of classification result
+    Algorithms:
+        a. updateUI - display div depending on mode
+        b. allowURL - add url to allowed list
+        c. checkURL - classify url using API
+        d. checkList - check if url is already labeled
+    Control:
+        a. Event listeners handle user interactions 
+        b. Fetch requests to external API for url classification
+ **/
+
 document.addEventListener("DOMContentLoaded", function(){
 
     // Get all components in html

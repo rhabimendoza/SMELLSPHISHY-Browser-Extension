@@ -1,3 +1,23 @@
+/** 
+    Program Title: page_classification.js
+    Main Purpose: Functionality of page_classification.html
+    Programmer: Rhabi Mendoza
+    Date Written: September 30, 2024
+    Date Revised: November 8, 2024
+
+    Purpose:
+        a. Display classified url and its suspicious features
+		b. Allow user to block or allow url
+    Data Structures:
+		a. allowedUrls - list of allowed urls
+        b. blockedUrls - list of blocked urls
+    Algorithms:
+        a. blockURL - block the url
+		b. allowURL - add url to allowed list
+    Control:
+        a. Event listeners handle user interactions 
+ **/
+
 document.addEventListener("DOMContentLoaded", function (){
 
 	// Get components from html
@@ -73,22 +93,6 @@ document.addEventListener("DOMContentLoaded", function (){
 			});
 		});
 
-	}
-
-	// Next line url 
-	function formatURL(url, limit){
-
-		// Make storage variable
-		let formatted_url = '';
-
-		// Next line characters
-		for(let i = 0; i < url.length; i += limit){
-			formatted_url += url.slice(i, i + limit) + '<br>';
-		}
-
-		// Return formatted
-		return formatted_url;
-		
 	}
 
 	// Add url to blocked

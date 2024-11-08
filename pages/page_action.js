@@ -1,3 +1,16 @@
+/** 
+    Program Title: page_action.js
+    Main Purpose: Functionality of page_action.html
+    Programmer: Rhabi Mendoza
+    Date Written: September 30, 2024
+    Date Revised: November 8, 2024
+
+    Purpose:
+        a. Display description of user action after blocking, unblocking, allowing, and disallowing a url
+    Control:
+        a. Event listeners handle user interactions 
+ **/
+
 document.addEventListener("DOMContentLoaded", function (){
   
     // Get components from html
@@ -34,22 +47,6 @@ document.addEventListener("DOMContentLoaded", function (){
 
     // Display the sent formatted url
     received_url.innerHTML = formatted_url;
-
-    // Next line url
-    function formatURL(url, limit){
-
-        // Make storage variable
-        let formatted_url = '';
-
-        // Next line characters
-        for(let i = 0; i < url.length; i += limit){
-            formatted_url += url.slice(i, i + limit) + '<br>';
-        }
-
-        // Return formatted url
-        return formatted_url;
-        
-    }
 
     // Close the page
     close_button.addEventListener('click', function (){
