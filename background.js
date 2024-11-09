@@ -2,11 +2,11 @@
 function applyUrlBlockingRules(){
 
     // Get all blocked urls
-    chrome.storage.local.get("blockedUrls", (result) => {
-        const blockedUrls = result.blockedUrls || [];
+    chrome.storage.local.get("blocked_urls", (result) => {
+        const blocked_urls = result.blocked_urls || [];
 
         // Add new url to the list
-        const rules = blockedUrls.map((url, index) => ({
+        const rules = blocked_urls.map((url, index) => ({
             id: index + 1,
             priority: 1,
             action: {type: "block"},
@@ -18,7 +18,7 @@ function applyUrlBlockingRules(){
 
         // Add rule to the storage
         chrome.declarativeNetRequest.updateDynamicRules({
-            removeRuleIds: Array.from(Array(blockedUrls.length).keys()).map(i => i + 1),
+            removeRuleIds: Array.from(Array(blocked_urls.length).keys()).map(i => i + 1),
             addRules: rules
         }, () =>{});
     });
@@ -26,31 +26,31 @@ function applyUrlBlockingRules(){
 }
 
 // Flag urls or allow access
-function checkURL(url, tabId){
+function checkURL(url, tab_id){
 
     // Trim whitespace from the URL
     url = url.trim();
 
     // Get the value of the checkbox to determine whether to execute url check automatically
     chrome.storage.local.get("isOn", (result) => {
-        const isOn = result.isOn;
+        const is_on = result.isOn;
 
         // Proceed if checked
-        if(isOn && url){ 
-            chrome.storage.local.get(["blockedUrls", "allowedUrls"], (result) => {
+        if(is_on && url){ 
+            chrome.storage.local.get(["blocked_urls", "allowed_urls"], (result) => {
                 
                 // Get all urls in blocked and allowed
-                const blockedUrls = result.blockedUrls || []; 
-                const allowedUrls = result.allowedUrls || []; 
+                const blocked_urls = result.blocked_urls || []; 
+                const allowed_urls = result.allowed_urls || []; 
 
                 // Do nothing if url is in allowed
-                if(allowedUrls.includes(url)){
+                if(allowed_urls.includes(url)){
                     return; 
                 }
-                else if(!blockedUrls.includes(url)){
+                else if(!blocked_urls.includes(url)){
 
                     // Show a temporary loading page
-                    chrome.tabs.update(tabId, { url: chrome.runtime.getURL("pages/page_loading.html") });
+                    chrome.tabs.update(tab_id, { url: chrome.runtime.getURL("pages/page_loading.html") });
 
                     // Send the url to python for checking
                     fetch("https://smellsphishy-api.onrender.com/check_url", {
@@ -68,21 +68,25 @@ function checkURL(url, tabId){
                         const benign = data.benign;  
                         const phishing = data.phishing; 
                         const features = data.features;    
-                        const featuresString = JSON.stringify(features); 
+                        const features_string = JSON.stringify(features); 
 
                         // Check the result
                         if(result === 1){
                             const message = "phishing";   
-                            chrome.tabs.update(tabId, { url: `pages/page_classification.html?url=${encodeURIComponent(url)}&benign=${encodeURIComponent(benign)}&phishing=${encodeURIComponent(phishing)}&features=${encodeURIComponent(featuresString)}&message=${encodeURIComponent(message)}`});;
+                            chrome.tabs.update(tab_id, { url: `pages/page_classification.html?url=${encodeURIComponent(url)}
+                            &benign=${encodeURIComponent(benign)}&phishing=${encodeURIComponent(phishing)}
+                            &features=${encodeURIComponent(features_string)}&message=${encodeURIComponent(message)}`});;
                         }
                         else if(result === 2){
                             const message = "warning"; 
-                            chrome.tabs.update(tabId, { url: `pages/page_classification.html?url=${encodeURIComponent(url)}&benign=${encodeURIComponent(benign)}&phishing=${encodeURIComponent(phishing)}&features=${encodeURIComponent(featuresString)}&message=${encodeURIComponent(message)}`});;
+                            chrome.tabs.update(tab_id, { url: `pages/page_classification.html?url=${encodeURIComponent(url)}
+                            &benign=${encodeURIComponent(benign)}&phishing=${encodeURIComponent(phishing)}
+                            &features=${encodeURIComponent(features_string)}&message=${encodeURIComponent(message)}`});;
                         }
                         else{
                             allowURL(url);
                             chrome.tabs.create({ url: url }, (newTab) => {
-                                chrome.tabs.remove(tabId);
+                                chrome.tabs.remove(tab_id);
                             });
                         }
 
@@ -101,12 +105,12 @@ function checkURL(url, tabId){
 function allowURL(url){
 
     // Get allowed urls
-    chrome.storage.local.get("allowedUrls", (result) => {
-        const allowedUrls = result.allowedUrls || [];
+    chrome.storage.local.get("allowed_urls", (result) => {
+        const allowed_urls = result.allowed_urls || [];
 
         // Push the url to list so user can visit it    
-        allowedUrls.push(url);
-        chrome.storage.local.set({ allowedUrls }, () => {});
+        allowed_urls.push(url);
+        chrome.storage.local.set({ allowed_urls }, () => {});
     });
 
 }

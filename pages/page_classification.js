@@ -9,8 +9,8 @@
         a. Display classified url and its suspicious features
 		b. Allow user to block or allow url
     Data Structures:
-		a. allowedUrls - list of allowed urls
-        b. blockedUrls - list of blocked urls
+		a. allowed_urls - list of allowed urls
+        b. blocked_urls - list of blocked urls
     Algorithms:
         a. blockURL - block the url
 		b. allowURL - add url to allowed list
@@ -21,57 +21,58 @@
 document.addEventListener("DOMContentLoaded", function (){
 
 	// Get components from html
-	const page_title = document.getElementById("page-title");
-	const received_url = document.getElementById("received-url");
-	const phishing_percent = document.getElementById("phishing-percent");
-	const benign_percent = document.getElementById("benign-percent");
-	const top_features = document.getElementById("top-features");
-	const block_button = document.getElementById("block-button");
-	const allow_button = document.getElementById("allow-button");
-	const close_button = document.getElementById("close-button");
+	const PAGE_TITLE = document.getElementById("page-title");
+	const RECEIVED_URL = document.getElementById("received-url");
+	const PHISHING_PERCENT = document.getElementById("phishing-percent");
+	const BENIGN_PERCENT = document.getElementById("benign-percent");
+	const TOP_FEATURES = document.getElementById("top-features");
+	const BLOCK_BUTTON = document.getElementById("block-button");
+	const ALLOW_BUTTON = document.getElementById("allow-button");
+	const CLOSE_BUTTON = document.getElementById("close-button");
 
 	// Get all sent data
-	const params = new URLSearchParams(window.location.search);
-	const url = decodeURIComponent(params.get('url'));
-	const benign = decodeURIComponent(params.get('benign'));
-	const phishing = decodeURIComponent(params.get('phishing'));
-	const featuresString = decodeURIComponent(params.get('features'));
-	const features = JSON.parse(featuresString);
-	const message = decodeURIComponent(params.get('message'));
+	const LINK_PARAMS = new URLSearchParams(window.location.search);
+	const LINK_URL = decodeURIComponent(LINK_PARAMS.get('url'));
+	const LINK_BENIGN = decodeURIComponent(LINK_PARAMS.get('benign'));
+	const LINK_PHISHING = decodeURIComponent(LINK_PARAMS.get('phishing'));
+	const FEATURES_STRING = decodeURIComponent(LINK_PARAMS.get('features'));
+	const LINK_FEATURES = JSON.parse(FEATURES_STRING);
+	const LINK_MESSAGE = decodeURIComponent(LINK_PARAMS.get('message'));
 
 	// Set title of page
-	if(message == "phishing"){
-		page_title.innerHTML = "This URL is detected as PHISHING"
+	if(LINK_MESSAGE == "phishing"){
+		PAGE_TITLE.innerHTML = "This URL is detected as PHISHING"
 	}
-	else if(message == "warning"){
-		page_title.innerHTML = "This URL is potentially a PHISHING SITE"
+	else{
+		PAGE_TITLE.innerHTML = "This URL is potentially a PHISHING SITE"
 	}
 
 	// Display url and probabilities
-	received_url.innerHTML = formatURL(url, 30); 
-	phishing_percent.innerHTML = (phishing * 100).toFixed(2) + "%";
-	benign_percent.innerHTML = (benign * 100).toFixed(2) + "%";
+	RECEIVED_URL.innerHTML = formatURL(LINK_URL, 30); 
+	PHISHING_PERCENT.innerHTML = (LINK_PHISHING * 100).toFixed(2) + "%";
+	BENIGN_PERCENT.innerHTML = (LINK_BENIGN * 100).toFixed(2) + "%";
 	
 	// List the features
-	features.forEach(feature => {
+	LINK_FEATURES.forEach(feature => {
 		const li = document.createElement("li");
 		li.textContent = feature;
-		top_features.appendChild(li); 
+		TOP_FEATURES.appendChild(li); 
 	});
 
 	// Block the url navigated
 	function blockURL(url){
 
 		// Get blocked urls
-		chrome.storage.local.get("blockedUrls", (result) => {
-			const blockedUrls = result.blockedUrls || [];
+		chrome.storage.local.get("blocked_urls", (result) => {
+			const blocked_urls = result.blocked_urls || [];
 
 			// Push the url to the list and go to blocked page
-			blockedUrls.push(url);
-			chrome.storage.local.set({ blockedUrls }, () => {
+			blocked_urls.push(url);
+			chrome.storage.local.set({ blocked_urls }, () => {
 				chrome.runtime.sendMessage({ action: "applyBlockingRules" }, () => {
 					const message = "blocked";
-					window.location.href = `page_action.html?url=${encodeURIComponent(url)}&message=${encodeURIComponent(message)}`;
+					window.location.href = `page_action.html?url=${encodeURIComponent(url)}
+					&message=${encodeURIComponent(message)}`;
 				});
 			});
 		});
@@ -82,35 +83,32 @@ document.addEventListener("DOMContentLoaded", function (){
 	function allowURL(url){
 
 		// Get allowed urls
-		chrome.storage.local.get("allowedUrls", (result) => {
-			const allowedUrls = result.allowedUrls || [];
+		chrome.storage.local.get("allowed_urls", (result) => {
+			const allowed_urls = result.allowed_urls || [];
 
 			// Push the url to list so user can visit it
-			allowedUrls.push(url);
-			chrome.storage.local.set({ allowedUrls }, () => {
+			allowed_urls.push(url);
+			chrome.storage.local.set({ allowed_urls }, () => {
 				const message = "allowed"
-				window.location.href = `page_action.html?url=${encodeURIComponent(url)}&message=${encodeURIComponent(message)}`;
+				window.location.href = `page_action.html?url=${encodeURIComponent(url)}
+				&message=${encodeURIComponent(message)}`;
 			});
 		});
 
 	}
 
 	// Add url to blocked
-	block_button.addEventListener("click", function (){
-		const params = new URLSearchParams(window.location.search);
-		const url = decodeURIComponent(params.get('url'));
-		blockURL(url);
+	BLOCK_BUTTON.addEventListener("click", function (){
+		blockURL(LINK_URL);
 	});
 
 	// List the url in allowed
-	allow_button.addEventListener("click", function (){
-		const params = new URLSearchParams(window.location.search);
-		const url = decodeURIComponent(params.get('url'));
-		allowURL(url);
+	ALLOW_BUTTON.addEventListener("click", function (){
+		allowURL(LINK_URL);
 	});
 
 	// Close the page
-	close_button.addEventListener("click", function (){
+	CLOSE_BUTTON.addEventListener("click", function (){
 		window.close();
 	});
 
