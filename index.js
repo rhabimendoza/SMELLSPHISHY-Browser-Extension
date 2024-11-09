@@ -10,8 +10,8 @@
         b. Classify input url
         c. Redirect users to url list
     Data Structures:
-        a. allowed_urls - list of allowed urls
-        b. blocked_urls - list of blocked urls
+        a. allowedUrls - list of allowed urls
+        b. blockedUrls - list of blocked urls
         c. data - storage of classification result
     Algorithms:
         a. updateUI - display div depending on mode
@@ -38,7 +38,7 @@ document.addEventListener("DOMContentLoaded", function(){
     }
 
     // Show or hide container depending on checkbox
-    function updateUI(){
+    function updateUi(){
 
         // Get state of checkbox
         var is_on = localStorage.getItem("isOn") === "false" ? false : true;
@@ -61,21 +61,21 @@ document.addEventListener("DOMContentLoaded", function(){
     }
 
     // Store the url to allow user to visit it
-    function allowURL(url){
+    function allowUrl(url){
 
         // Get allowed urls
-        chrome.storage.local.get("allowed_urls", (result) => {
-            const allowed_urls = result.allowed_urls || [];
+        chrome.storage.local.get("allowedUrls", (result) => {
+            const ALLOWED_URLS = result.allowedUrls || [];
 
             // Push the url to list so user can visit it
-            allowed_urls.push(url);
-            chrome.storage.local.set({ allowed_urls }, () => {});
+            ALLOWED_URLS.push(url);
+            chrome.storage.local.set({ allowedUrls: ALLOWED_URLS }, () => {});
         });
 
     }
 
     // Check validity and classification of url
-    async function checkURL(){
+    async function checkUrl(){
 
         // Get url and trim it
         var url = MANUAL_URL.value;
@@ -89,8 +89,8 @@ document.addEventListener("DOMContentLoaded", function(){
         else{
 
             // Check if url is already listed
-            const in_list = await checkList();
-            if(in_list === 1){
+            const IN_LIST = await checkList();
+            if(IN_LIST === 1){
                 window.location.href = "pages/page_urls.html";
                 return; 
             }
@@ -107,35 +107,33 @@ document.addEventListener("DOMContentLoaded", function(){
             .then(data => {
 
                 // Get data from python
-                const result = data.result;             
-                const benign = data.benign;  
-                const phishing = data.phishing; 
-                const features = data.features;    
-                const features_string = JSON.stringify(features); 
+                const RESULT = data.result;             
+                const BENIGN = data.benign;  
+                const PHISHING = data.phishing; 
+                const FEATURES = data.features;    
+                const FEATURES_STRING = JSON.stringify(FEATURES); 
 
                 // Identify what to output
-                if(result === 3){
+                if(RESULT === 3){
                     MANUAL_URL.value = "";
                     MANUAL_URL.placeholder = "URL is INVALID.";
                 }
-                else if(result === 1){
-                    const message = "phishing";   
-                    window.location.href = `pages/page_classification.html?url=${encodeURIComponent(url)}
-                    &benign=${encodeURIComponent(benign)}&phishing=${encodeURIComponent(phishing)}
-                    &features=${encodeURIComponent(features_string)}&message=${encodeURIComponent(message)}`;
+                else if(RESULT === 1){
+                    const MESSAGE = "phishing";   
+                    window.location.href = `pages/page_classification.html?url=${encodeURIComponent(url)}&benign=${encodeURIComponent(BENIGN)}
+                    &phishing=${encodeURIComponent(PHISHING)}&features=${encodeURIComponent(FEATURES_STRING)}&message=${encodeURIComponent(MESSAGE)}`;
                 }
-                else if(result === 2){
-                    const message = "warning";   
-                    window.location.href = `pages/page_classification.html?url=${encodeURIComponent(url)}
-                    &benign=${encodeURIComponent(benign)}&phishing=${encodeURIComponent(phishing)}
-                    &features=${encodeURIComponent(features_string)}&message=${encodeURIComponent(message)}`;
+                else if(RESULT === 2){
+                    const MESSAGE = "warning";   
+                    window.location.href = `pages/page_classification.html?url=${encodeURIComponent(url)}&benign=${encodeURIComponent(BENIGN)}
+                    &phishing=${encodeURIComponent(PHISHING)}&features=${encodeURIComponent(FEATURES_STRING)}&message=${encodeURIComponent(MESSAGE)}`;
                 }
                 else{
                     MANUAL_URL.value = "";
                     MANUAL_URL.placeholder = "URL is SAFE.";
-                    allowURL(url);
+                    allowUrl(url);
                 }
-    
+
             });
 
         }
@@ -147,12 +145,12 @@ document.addEventListener("DOMContentLoaded", function(){
         return new Promise((resolve, reject) => {
 
             // Get both allowed and blocked urls from storage
-            chrome.storage.local.get(["allowed_urls", "blocked_urls"], (result) => {
-                const allowed_urls = result.allowed_urls || [];
-                const blocked_urls = result.blocked_urls || [];
+            chrome.storage.local.get(["allowedUrls", "blockedUrls"], (result) => {
+                const ALLOWED_URLS = result.allowedUrls || [];
+                const BLOCKED_URLS = result.blockedUrls || [];
     
                 // Check if the url is in either list
-                if(allowed_urls.includes(MANUAL_URL.value) || blocked_urls.includes(MANUAL_URL.value)){
+                if(ALLOWED_URLS.includes(MANUAL_URL.value) || BLOCKED_URLS.includes(MANUAL_URL.value)){
                     resolve(1);
                 }
                 else{
@@ -168,15 +166,15 @@ document.addEventListener("DOMContentLoaded", function(){
         var is_on = TOGGLE_CHECK.checked;
         localStorage.setItem("isOn", is_on.toString());
         chrome.storage.local.set({isOn: is_on});
-        updateUI();
+        updateUi();
     });
 
     // Check the input url 
     CHECK_BUTTON.addEventListener("click", function (){
-        checkURL();
+        checkUrl();
     });
 
     // Update ui
-    updateUI();
+    updateUi();
 
 });

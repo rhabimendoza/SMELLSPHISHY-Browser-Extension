@@ -2,11 +2,11 @@
 function applyUrlBlockingRules(){
 
     // Get all blocked urls
-    chrome.storage.local.get("blocked_urls", (result) => {
-        const blocked_urls = result.blocked_urls || [];
+    chrome.storage.local.get("blockedUrls", (result) => {
+        const BLOCKED_URLS = result.blockedUrls || [];
 
         // Add new url to the list
-        const rules = blocked_urls.map((url, index) => ({
+        const rules = BLOCKED_URLS.map((url, index) => ({
             id: index + 1,
             priority: 1,
             action: {type: "block"},
@@ -18,7 +18,7 @@ function applyUrlBlockingRules(){
 
         // Add rule to the storage
         chrome.declarativeNetRequest.updateDynamicRules({
-            removeRuleIds: Array.from(Array(blocked_urls.length).keys()).map(i => i + 1),
+            removeRuleIds: Array.from(Array(BLOCKED_URLS.length).keys()).map(i => i + 1),
             addRules: rules
         }, () =>{});
     });
@@ -26,22 +26,22 @@ function applyUrlBlockingRules(){
 }
 
 // Flag urls or allow access
-function checkURL(url, tab_id){
+function checkUrl(url, tab_id){
 
     // Trim whitespace from the URL
     url = url.trim();
 
     // Get the value of the checkbox to determine whether to execute url check automatically
     chrome.storage.local.get("isOn", (result) => {
-        const is_on = result.isOn;
+        const IS_ON = result.isOn;
 
         // Proceed if checked
-        if(is_on && url){ 
-            chrome.storage.local.get(["blocked_urls", "allowed_urls"], (result) => {
+        if(IS_ON && url){ 
+            chrome.storage.local.get(["blockedUrls", "allowedUrls"], (result) => {
                 
                 // Get all urls in blocked and allowed
-                const blocked_urls = result.blocked_urls || []; 
-                const allowed_urls = result.allowed_urls || []; 
+                const blocked_urls = result.blockedUrls || []; 
+                const allowed_urls = result.allowedUrls || []; 
 
                 // Do nothing if url is in allowed
                 if(allowed_urls.includes(url)){
@@ -64,28 +64,26 @@ function checkURL(url, tab_id){
                     .then(data => {
                         
                         // Get output of python
-                        const result = data.result;             
-                        const benign = data.benign;  
-                        const phishing = data.phishing; 
-                        const features = data.features;    
-                        const features_string = JSON.stringify(features); 
+                        const RESULT = data.result;             
+                        const BENIGN = data.benign;  
+                        const PHISHING = data.phishing; 
+                        const FEATURES = data.features;    
+                        const FEATURES_STRING = JSON.stringify(FEATURES); 
 
                         // Check the result
-                        if(result === 1){
-                            const message = "phishing";   
-                            chrome.tabs.update(tab_id, { url: `pages/page_classification.html?url=${encodeURIComponent(url)}
-                            &benign=${encodeURIComponent(benign)}&phishing=${encodeURIComponent(phishing)}
-                            &features=${encodeURIComponent(features_string)}&message=${encodeURIComponent(message)}`});;
+                        if(RESULT === 1){
+                            const MESSAGE = "phishing";   
+                            chrome.tabs.update(tab_id, { url: `pages/page_classification.html?url=${encodeURIComponent(url)}&benign=${encodeURIComponent(BENIGN)}
+                            &phishing=${encodeURIComponent(PHISHING)}&features=${encodeURIComponent(FEATURES_STRING)}&message=${encodeURIComponent(MESSAGE)}`});;
                         }
-                        else if(result === 2){
-                            const message = "warning"; 
-                            chrome.tabs.update(tab_id, { url: `pages/page_classification.html?url=${encodeURIComponent(url)}
-                            &benign=${encodeURIComponent(benign)}&phishing=${encodeURIComponent(phishing)}
-                            &features=${encodeURIComponent(features_string)}&message=${encodeURIComponent(message)}`});;
+                        else if(RESULT === 2){
+                            const MESSAGE = "warning"; 
+                            chrome.tabs.update(tab_id, { url: `pages/page_classification.html?url=${encodeURIComponent(url)}&benign=${encodeURIComponent(BENIGN)}
+                            &phishing=${encodeURIComponent(PHISHING)}&features=${encodeURIComponent(FEATURES_STRING)}&message=${encodeURIComponent(MESSAGE)}`});;
                         }
                         else{
-                            allowURL(url);
-                            chrome.tabs.create({ url: url }, (newTab) => {
+                            allowUrl(url);
+                            chrome.tabs.create({ url: url }, (new_tab) => {
                                 chrome.tabs.remove(tab_id);
                             });
                         }
@@ -102,15 +100,15 @@ function checkURL(url, tab_id){
 }
 
 // Store the url to allow user to visit it
-function allowURL(url){
+function allowUrl(url){
 
     // Get allowed urls
-    chrome.storage.local.get("allowed_urls", (result) => {
-        const allowed_urls = result.allowed_urls || [];
+    chrome.storage.local.get("allowedUrls", (result) => {
+        const ALLOWED_URLS = result.allowedUrls || [];
 
         // Push the url to list so user can visit it    
-        allowed_urls.push(url);
-        chrome.storage.local.set({ allowed_urls }, () => {});
+        ALLOWED_URLS.push(url);
+        chrome.storage.local.set({ allowedUrls: ALLOWED_URLS }, () => {});
     });
 
 }
@@ -131,7 +129,8 @@ chrome.runtime.onInstalled.addListener(() => {
 // Listen to all navigation events
 chrome.webNavigation.onBeforeNavigate.addListener((details) => {
     if(details.frameId === 0){
-        const url = details.url;
-        checkURL(url, details.tabId);
+        const URL = details.url;
+        const TAB_ID = details.tabId;
+        checkUrl(URL, TAB_ID);
     }
 }, { url: [{ schemes: ['http', 'https'] }]});

@@ -9,9 +9,9 @@
         a. Allow user to filter block and allowed url using search box
         b. Unblock or disallow a url
     Data Structures:
-        a. allowed_urls - list of allowed urls
-        b. blocked_urls - list of blocked urls
-        c. combined_urls - list of combined blocked and allowed urls
+        a. allowedUrls - list of allowed urls
+        b. blockedUrls - list of blocked urls
+        c. combinedUrls - list of combined blocked and allowed urls
     Algorithms:
         a. displayURL - get list of blocked and allowed urls and display with button
         b. unblockURL - unblock the url
@@ -27,47 +27,47 @@ document.addEventListener("DOMContentLoaded", function(){
     const URL_LIST = document.getElementById('url-list');
 
     // Function to fetch and display url
-    function displayURL(){
+    function displayUrl(){
 
         // Get list
-        chrome.storage.local.get(['blocked_urls', 'allowed_urls'], (result) => {
-            const blocked_urls = result.blocked_urls || [];
-            const allowed_urls = result.allowed_urls || [];
+        chrome.storage.local.get(['blockedUrls', 'allowedUrls'], (result) => {
+            const BLOCKED_URLS = result.blockedUrls || [];
+            const ALLOWED_URLS = result.allowedUrls || [];
             
             // Combine and sort url
-            const combined_urls = [...blocked_urls.map(url => ({ url, type: 'blocked' })), 
-                                    ...allowed_urls.map(url => ({ url, type: 'allowed' }))];
-            combined_urls.sort((a, b) => a.url.localeCompare(b.url));
+            const COMBINED_URLS = [...BLOCKED_URLS.map(url => ({ url, type: 'blocked' })), 
+                                    ...ALLOWED_URLS.map(url => ({ url, type: 'allowed' }))];
+            COMBINED_URLS.sort((a, b) => a.url.localeCompare(b.url));
 
             // Clear existing list
             URL_LIST.innerHTML = '';
 
             // Display urls
-            combined_urls.forEach(item => {
+            COMBINED_URLS.forEach(item => {
 
                 // Create list item
-                const li = document.createElement('li');
+                const LI = document.createElement('li');
                 
                 // Format url into lines of characters
-                const formatted_url = formatURL(item.url, 30);
-                li.innerHTML = formatted_url;
+                const FORMATTED_URL = formatUrl(item.url, 30);
+                LI.innerHTML = FORMATTED_URL;
 
                 // Create a button depending on type
-                const button = document.createElement('button');
+                const BUTTON = document.createElement('button');
                 if(item.type === 'blocked'){
-                    button.textContent = 'Unblock';
-                    button.className = 'unblock-button';
-                    button.onclick = () => unblockURL(item.url);
+                    BUTTON.textContent = 'Unblock';
+                    BUTTON.className = 'unblock-button';
+                    BUTTON.onclick = () => unblockUrl(item.url);
                 } 
                 else{
-                    button.textContent = 'Disallow';
-                    button.className = 'disallow-button';
-                    button.onclick = () => disallowURL(item.url);
+                    BUTTON.textContent = 'Disallow';
+                    BUTTON.className = 'disallow-button';
+                    BUTTON.onclick = () => disallowUrl(item.url);
                 }
 
                 // Create the row
-                li.appendChild(button);
-                URL_LIST.appendChild(li);
+                LI.appendChild(BUTTON);
+                URL_LIST.appendChild(LI);
         
             });
 
@@ -76,29 +76,29 @@ document.addEventListener("DOMContentLoaded", function(){
     }
 
     // Unblock a specific url
-    function unblockURL(url){
+    function unblockUrl(url){
 
         // Get the currently blocked urls
-        chrome.storage.local.get("blocked_urls", (data) => {
-            const blocked_urls = data.blocked_urls || [];
+        chrome.storage.local.get("blockedUrls", (data) => {
+            const BLOCKED_URLS = data.blockedUrls || [];
             
             // Remove the specified url from the list
-            const updated_urls = blocked_urls.filter(url => url !== url);
+            const UPDATED_BLOCKED_URLS = BLOCKED_URLS.filter(item => item !== url);
 
             // Update the storage with the new list
-            chrome.storage.local.set({ blocked_urls: updated_urls }, () => {
+            chrome.storage.local.set({ blockedUrls: UPDATED_BLOCKED_URLS }, () => {
                 
                 chrome.declarativeNetRequest.getDynamicRules((rules) => {
                     
                     // Remove the rule
-                    const rule_id = rules.filter(rule => rule.action?.type === "block" && rule.condition?.urlFilter === url).map(rule => rule.id);
+                    const RULE_IDS = rules.filter(rule => rule.action?.type === "block" && rule.condition?.urlFilter === url).map(rule => rule.id);
                     chrome.declarativeNetRequest.updateDynamicRules({
-                        removeRuleIds: rule_id,
+                        removeRuleIds: RULE_IDS,
                         addRules: []
                     }, () => {
-                        const message = "unblock";
+                        const MESSAGE = "unblock";
                         window.location.href = `page_action.html?url=${encodeURIComponent(url)}
-                        &message=${encodeURIComponent(message)}`;
+                        &message=${encodeURIComponent(MESSAGE)}`;
                     
                     });
 
@@ -111,18 +111,18 @@ document.addEventListener("DOMContentLoaded", function(){
     }
     
     // Disallow a specific url
-    function disallowURL(url){
+    function disallowUrl(url){
 
         // Get list of allowed url
-        chrome.storage.local.get('allowed_urls', (result) => {
-            const allowed_urls = result.allowed_urls || [];
+        chrome.storage.local.get('allowedUrls', (result) => {
+            const ALLOWED_URLS = result.allowedUrls || [];
 
             // Update the allowed list and go to disallowed page
-            const updated_urls = allowed_urls.filter(item => item !== url);
-            chrome.storage.local.set({ allowed_urls: updated_urls }, () => {
-                const message = "disallow";
+            const UPDATED_URLS = ALLOWED_URLS.filter(item => item !== url);
+            chrome.storage.local.set({ allowedUrls: UPDATED_URLS }, () => {
+                const MESSAGE = "disallow";
                 window.location.href = `page_action.html?url=${encodeURIComponent(url)}
-                &message=${encodeURIComponent(message)}`;
+                &message=${encodeURIComponent(MESSAGE)}`;
             });
         });
 
@@ -132,16 +132,16 @@ document.addEventListener("DOMContentLoaded", function(){
     SEARCH_BOX.addEventListener('input', () => {
         
         // Turn input to lowercase
-        const inp_find = SEARCH_BOX.value.toLowerCase();
+        const INP_FIND = SEARCH_BOX.value.toLowerCase();
 
         // Show query
-        Array.from(URL_LIST.children).forEach(li => {
-            li.style.display = li.textContent.toLowerCase().includes(inp_find) ? '' : 'none';
+        Array.from(URL_LIST.children).forEach(LI => {
+            LI.style.display = LI.textContent.toLowerCase().includes(INP_FIND) ? '' : 'none';
         });
 
     });
 
     // Initial display of urls
-    displayURL();
+    displayUrl();
 
 });

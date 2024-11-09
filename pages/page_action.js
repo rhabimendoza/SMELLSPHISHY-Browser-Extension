@@ -20,33 +20,33 @@ document.addEventListener("DOMContentLoaded", function (){
     const CLOSE_BUTTON = document.getElementById('close-button');
 
     // Get sent url and message
-    const LINK_PARAMS = new URLSearchParams(window.location.search);
-    const LINK_URL = LINK_PARAMS.get("url");
-    const LINK_MESSAGE = LINK_PARAMS.get("message");
-
-    // Format the url
-    const FORMATTED_URL = formatURL(LINK_URL, 30);
-
-    // Display the sent formatted url
-    RECEIVED_URL.innerHTML = FORMATTED_URL;
+    const PARAMS = new URLSearchParams(window.location.search);
+    const URL = PARAMS.get("url");
+    const MESSAGE = PARAMS.get("message");
 
     // Display title and description based on message
-    if(LINK_MESSAGE === "blocked"){
+    if(MESSAGE === "blocked"){
         PAGE_TITLE.innerText = "URL Blocked";
         PAGE_DESC.innerText = "By putting this URL in your blocked list, SmellsPhishy will stop you from accessing this site.";
     } 
-    else if(LINK_MESSAGE === "allowed"){
+    else if(MESSAGE === "allowed"){
         PAGE_TITLE.innerText = "URL Allowed";
         PAGE_DESC.innerText = "By putting this URL in your allowed list, SmellsPhishy will allow you to proceed to the site without scanning during automatic detection.";
     }
-    else if(LINK_MESSAGE === "unblock"){
+    else if(MESSAGE === "unblock"){
         PAGE_TITLE.innerText = "URL Unblocked";
         PAGE_DESC.innerText = "The URL will now be accessible and when the automatic detection is enabled, it will be scanned again.";
     }
-    else{
+    else if(MESSAGE === "disallow"){
         PAGE_TITLE.innerText = "URL Disallowed";
         PAGE_DESC.innerText = "To access this again during automatic detection, it will have to be added to allowed list again.";
     }
+
+    // Format the url
+    const FORMATTED_URL = formatUrl(URL, 30);
+
+    // Display the sent formatted url
+    RECEIVED_URL.innerHTML = FORMATTED_URL;
 
     // Close the page
     CLOSE_BUTTON.addEventListener('click', function (){

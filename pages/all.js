@@ -12,7 +12,7 @@
  **/
 
 // Next line url
-function formatURL(url, limit){
+function formatUrl(url, limit){
 
     // Make storage variable
     let formatted_url = '';
