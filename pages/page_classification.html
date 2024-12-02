@@ -30,6 +30,10 @@
                 font-family: 'Inter', sans-serif;
             }
 
+            a{
+                font-size: smaller;
+            }
+
             .header-div{
                 background-color: #DA0037;
             }
@@ -147,6 +151,8 @@
 
                 </div>
 
+                <a href="#features-info" class="d-flex justify-content-end">Features information here</a>
+
                 <div class="buttons-container m-3 mt-4 p-4 d-flex rounded flex-column justify-content-center align-items-center">
                     <p class="butttons-title p-1">What to do with url?</p>
                     <button id="block-button" class="p-2 m-2">Block this url</button>
@@ -156,6 +162,141 @@
                 <div class="d-flex justify-content-center m-4">
                     <button id="close-button" class="p-2">Close this page</button>
                 </div> 
+
+                <div id="features-info">
+
+                    <table class="table table-striped table-bordered align-middle">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>Feature</th>
+                                <th>Indicator</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>char_diversity</td>
+                                <td>The ratio of unique characters to the total length of the URL.</td>
+                            </tr>
+                            <tr>
+                                <td>contains_https</td>
+                                <td>Indicates whether the URL uses HTTPS instead of HTTP.</td>
+                            </tr>
+                            <tr>
+                                <td>domain_consonant_ratio</td>
+                                <td>The proportion of consonants in the domain.</td>
+                            </tr>
+                            <tr>
+                                <td>domain_digit_ratio</td>
+                                <td>The proportion of digits in the domain.</td>
+                            </tr>
+                            <tr>
+                                <td>domain_emb_N</td>
+                                <td>Embedding of the domain portion of the URL, which is a numerical representation of the domain obtained using a Word2Vec model.</td>
+                            </tr>
+                            <tr>
+                                <td>domain_entropy</td>
+                                <td>A measure of the randomness of characters in the domain.</td>
+                            </tr>
+                            <tr>
+                                <td>domain_length</td>
+                                <td>Number of characters in the domain name.</td>
+                            </tr>
+                            <tr>
+                                <td>domain_longest_word_length</td>
+                                <td>Length of the longest word in the domain.</td>
+                            </tr>
+                            <tr>
+                                <td>has_suspicious_keywords</td>
+                                <td>Indicates whether the URL contains keywords that are commonly associated with phishing or malicious activity.</td>
+                            </tr>
+                            <tr>
+                                <td>is_ip_address</td>
+                                <td>A binary feature indicates if the domain is an IP address. </td>
+                            </tr>
+                            <tr>
+                                <td>max_path_token_length</td>
+                                <td>Length of the longest token in the path.</td>
+                            </tr>
+                            <tr>
+                                <td>num_ampersand</td>
+                                <td>The count of '&' symbols in the URL.</td>
+                            </tr>
+                            <tr>
+                                <td>num_at</td>
+                                <td>The count of ‘@' symbols in the URL.</td>
+                            </tr>
+                            <tr>
+                                <td>num_digits</td>
+                                <td>The count of digits in the URL.</td>
+                            </tr>
+                            <tr>
+                                <td>num_dots</td>
+                                <td>The count of dot characters in the URL.</td>
+                            </tr>
+                            <tr>
+                                <td>num_hyphens</td>
+                                <td>The count of hyphen characters in the URL.</td>
+                            </tr>
+                            <tr>
+                                <td>num_query_params</td>
+                                <td>Number of parameters present in the query string of the URL.</td>
+                            </tr>
+                            <tr>
+                                <td>num_subdirectories</td>
+                                <td>The count of subdirectories in the URL path.</td>
+                            </tr>
+                            <tr>
+                                <td>path_emb_N</td>
+                                <td>Embedding of the path portion of the URL, which is a numerical representation of the domain obtained using a Word2Vec model.</td>
+                            </tr>
+                            <tr>
+                                <td>path_entropy</td>
+                                <td>A measure of the randomness of characters in the path.</td>
+                            </tr>
+                            <tr>
+                                <td>path_length</td>
+                                <td>Number of characters in the URL path.</td>
+                            </tr>
+                            <tr>
+                                <td>path_token_count</td>
+                                <td>Number of tokens in the path.</td>
+                            </tr>
+                            <tr>
+                                <td>query_entropy</td>
+                                <td>A measure of the randomness of characters in the query string.</td>
+                            </tr>
+                            <tr>
+                                <td>query_length</td>
+                                <td>Number of characters in the query string.</td>
+                            </tr>
+                            <tr>
+                                <td>subdomain_count</td>
+                                <td>The number of subdomains present in the URL.</td>
+                            </tr>
+                            <tr>
+                                <td>tld_length</td>
+                                <td>The length of the Top-Level Domain.</td>
+                            </tr>
+                            <tr>
+                                <td>tld_score</td>
+                                <td>A score based on the frequency of the TLD in benign and phishing URLs.</td>
+                            </tr>
+                            <tr>
+                                <td>url_consonant_ratio</td>
+                                <td>The proportion of consonants in the URL.</td>
+                            </tr>
+                            <tr>
+                                <td>url_entropy</td>
+                                <td>A measure of the randomness of characters in the URL.</td>
+                            </tr>
+                            <tr>
+                                <td>url_length</td>
+                                <td>Total number of characters in the URL.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    
+                </div>
            
             </div>
 
