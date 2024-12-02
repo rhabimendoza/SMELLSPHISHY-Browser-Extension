@@ -11,57 +11,53 @@
 <html lang="en">
 
     <head>
-        
-        <!-- Setup -->
+
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>SmellsPhishy</title>
+        <title>Centered Spinner</title>
 
-        <!-- CSS -->
         <style>
             body{
+                margin: 0;
                 display: flex;
+                flex-direction: column;
                 justify-content: center;
                 align-items: center;
                 height: 100vh;
+                background-color: #f0f0f0;
                 font-family: Arial, sans-serif;
-                background-color: #f2f2f2;
-            }
-
-            .container{
-                text-align: center;
             }
 
             .spinner{
-                border: 4px solid rgba(0, 0, 0, 0.1);
-                border-left-color: #000;
-                border-radius: 50%;
                 width: 50px;
                 height: 50px;
+                border: 5px solid #ccc;
+                border-top: 5px solid #c40837;
+                border-radius: 50%;
                 animation: spin 1s linear infinite;
-                margin-bottom: 20px;
+            }
+
+            .loading-text{
+                margin-top: 15px;
+                font-size: 16px;
+                color: #333;
             }
 
             @keyframes spin{
+                0%{
+                    transform: rotate(0deg);
+                }
                 100%{
                     transform: rotate(360deg);
                 }
             }
         </style>
-    
+
     </head>
 
-    <body style="background-color: #e9e9e9;">
-        
-        <!-- Loading circle -->
-        <div class="container">
-            <div class="spinner"></div>
-            <p>SmellsPhishy is classifying the URL...</p>
-        </div>
-
-        <!-- JS -->
-        <script src="all.js"></script>
-
+    <body>
+        <div class="spinner"></div>
+        <div class="loading-text">SmellsPhishy is classifying the URL...</div>
     </body>
 
 </html>
