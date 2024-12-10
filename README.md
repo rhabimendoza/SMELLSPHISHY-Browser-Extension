@@ -1,12 +1,18 @@
 # SMELLSPHISHY Browser Extension
 
-This browser extension provides automatic and manual URL detection to identify phishing and benign URLs, protecting users as they browse. The detection mechanism is based on a Random Forest model adversarially trained using benign, phishing, and synthetic URLs generated with genetic algorithm.
+This browser extension provides automatic and manual URL detection to identify phishing and benign URLs, protecting users as they browse. The detection mechanism is based on a Random Forest model adversarially trained using benign, phishing, and synthetic URLs generated with a genetic algorithm.
+
+---
 
 ## Features
 
 - **Automatic Detection**: Automatically checks each URL you visit when activated, alerting you of phishing URLs.
 - **Manual Detection**: Allows users to manually input a URL to verify its safety, useful for checking links before clicking.
+- **URL Blocking**: Prevents access to detected phishing URLs, ensuring your safety while browsing.
+- **Whitelisting**: Add URLs to an allowed list to bypass checks for trusted websites.
 - **Privacy-Focused**: No URLs are collected by the researcher. Blocked and allowed URL lists are stored only in the browser’s local storage, keeping your data private and secure.
+
+---
 
 ## Getting Started
 
@@ -17,6 +23,8 @@ This browser extension provides automatic and manual URL detection to identify p
 3. **Load the Extension**:
    - Click **Load unpacked** and select the downloaded repository folder. The extension will now appear in your extensions list.
 4. **Activate the Extension**: Pin the extension to easily access it and enable detection features.
+
+---
 
 ## Usage
 
@@ -31,15 +39,31 @@ This browser extension provides automatic and manual URL detection to identify p
 1. Open the extension and use the input field to enter a URL.
 2. The extension will check if the URL is benign or phishing.
 
+### URL Blocking
+
+- If a URL is flagged as phishing:
+  - Access to the URL will be blocked.
+  - The URL will be added to the **Blocked URLs** list.
+
+### Whitelisting URLs
+
+- If you trust a URL and add it to the **Allowed URLs** list:
+  - The URL will bypass all future phishing checks.
+  - It will be accessible without further alerts.
+
+---
+
 ## Model Information
 
 - **Machine Learning Model**: Random Forest.
 - **Training Method**: Adversarially trained using synthetic URLs created with a genetic algorithm. This training enhances the model’s accuracy against a wide range of phishing tactics.
 
+---
+
 ## Storage
 
 The extension stores two lists locally in your browser:
-- **Blocked URLs**: List of detected phishing URLs.
+- **Blocked URLs**: List of detected phishing URLs that are inaccessible.
 - **Allowed URLs**: List of confirmed benign URLs and whitelisted URLs.
 
 These lists are saved in your browser’s local storage and are not accessible to external parties or the developer.
