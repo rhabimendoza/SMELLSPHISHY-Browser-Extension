@@ -88,6 +88,10 @@ document.addEventListener("DOMContentLoaded", function(){
         }
         else{
 
+            // Create loading spinner
+            const loadingSpinner = document.getElementById("loading-spinner");
+            document.getElementById("loading-spinner").style.display = "flex";
+
             // Check if url is already listed
             const IN_LIST = await checkList();
             if(IN_LIST === 1){
@@ -96,7 +100,7 @@ document.addEventListener("DOMContentLoaded", function(){
             }
 
             // Send url to python
-            fetch("https://smellsphishy-api.onrender.com/check_url", { 
+            fetch("http://127.0.0.1:5000/check_url", { 
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -115,6 +119,7 @@ document.addEventListener("DOMContentLoaded", function(){
 
                 // Identify what to output
                 if(RESULT === 3){
+                    loadingSpinner.style.display = "none";
                     MANUAL_URL.value = "";
                     MANUAL_URL.placeholder = "URL is INVALID.";
                 }
@@ -129,6 +134,7 @@ document.addEventListener("DOMContentLoaded", function(){
                     &phishing=${encodeURIComponent(PHISHING)}&features=${encodeURIComponent(FEATURES_STRING)}&message=${encodeURIComponent(MESSAGE)}`;
                 }
                 else{
+                    loadingSpinner.style.display = "none";
                     MANUAL_URL.value = "";
                     MANUAL_URL.placeholder = "URL is SAFE.";
                     allowUrl(url);
